@@ -5,29 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#1F6B83">
-  <title>SolarInvest Campo - Instalador</title>
+  <meta name="theme-color" content="#0B132B">
+  <title>TNSolar Campo</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="logotn.jpg">
   <style>
     :root {
-      --petrol: #1F6B83;
-      --petrol-dark: #144A5C;
-      --solar: #F5A623;
-      --bg: #EEF2F6;
-      --surface: #FFFFFF;
-      --text: #0F172A;
-      --text-sub: #475569;
-      --border: #CBD5E1;
+      --bg-deep: #070D19;
+      --bg-mid: #0F1E36;
+      --glass-surface: rgba(255, 255, 255, 0.08);
+      --glass-surface-strong: rgba(20, 32, 54, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --glass-highlight: rgba(255, 255, 255, 0.25);
 
-      --green: #15803D;
-      --green-bg: #DCFCE7;
-      --blue: #0369A1;
-      --blue-bg: #E0F2FE;
-      --amber: #B45309;
-      --amber-bg: #FEF3C7;
-      --red: #B91C1C;
-      --red-bg: #FEE2E2;
+      --solar: #F59E0B;
+      --solar-glow: rgba(245, 158, 11, 0.35);
+      --cyan: #38BDF8;
+      --green: #10B981;
+      --amber: #F59E0B;
+      --red: #EF4444;
+
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
 
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -37,31 +36,58 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-size: 16px;
+    html, body {
+      width: 100%;
+      min-height: 100dvh;
+      background-color: var(--bg-deep);
+      background-image:
+        radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.18) 0%, transparent 42%),
+        radial-gradient(circle at 85% 25%, rgba(245, 158, 11, 0.16) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
+        linear-gradient(180deg, #070D19 0%, #0D192E 100%);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      font-size: 15px;
       line-height: 1.4;
+      overflow-x: hidden;
       overscroll-behavior-y: contain;
     }
 
     .hidden { display: none !important; }
 
+    /* ==========================================
+       COMPONENTES APPLE GLASS BASE
+       ========================================== */
+    .glass-panel {
+      background: var(--glass-surface);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32), inset 0 1px 0 var(--glass-highlight);
+    }
+
     /* BANNER OFFLINE & TOAST */
-    .offline-banner {
-      background: #B91C1C;
-      color: #FFFFFF;
-      text-align: center;
-      font-size: 13px;
+    .offline-pill {
+      position: fixed;
+      top: calc(10px + var(--safe-top));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(239, 68, 68, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff;
+      font-size: 12px;
       font-weight: 700;
-      padding: calc(6px + var(--safe-top)) 12px 6px;
-      position: sticky;
-      top: 0;
-      z-index: 999;
+      padding: 6px 14px;
+      border-radius: 99px;
+      z-index: 1500;
+      white-space: nowrap;
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
     }
 
     .toast {
@@ -69,647 +95,756 @@
       top: calc(16px + var(--safe-top));
       left: 50%;
       transform: translateX(-50%);
-      background: #0F172A;
-      color: #FFFFFF;
-      padding: 12px 20px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      padding: 11px 18px;
       border-radius: 99px;
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      z-index: 2000;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      z-index: 2500;
       white-space: nowrap;
-      max-width: 92vw;
+      max-width: 90vw;
       overflow: hidden;
       text-overflow: ellipsis;
+      animation: fadeDrop 0.25s ease-out;
+    }
+    @keyframes fadeDrop {
+      from { opacity: 0; transform: translate(-50%, -10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
     }
 
     /* LOADER */
     .loader-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.8);
-      color: #FFFFFF;
+      background: rgba(7, 13, 25, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 3000;
+      gap: 14px;
     }
     .spinner {
-      width: 44px;
-      height: 44px;
-      border: 4px solid rgba(255,255,255,0.25);
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
       border-top-color: var(--solar);
       border-radius: 50%;
-      animation: spin 0.75s linear infinite;
-      margin-bottom: 12px;
+      animation: spin 0.75s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ==========================================
-       1. TELA DE LOGIN
+       1. TELA DE LOGIN (CABE 100% NA TELA)
        ========================================== */
     #view-login {
       min-height: 100dvh;
-      background: linear-gradient(160deg, var(--petrol-dark) 0%, #0F172A 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: calc(20px + var(--safe-top)) 18px calc(16px + var(--safe-bottom));
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 390px;
+      margin: auto 0;
+      border-radius: 28px;
+      padding: 28px 22px;
+      text-align: center;
+    }
+
+    .logo-ring {
+      width: 82px;
+      height: 82px;
+      margin: 0 auto 14px;
+      border-radius: 22px;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--solar), var(--cyan));
+      box-shadow: 0 8px 24px var(--solar-glow);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
     }
-    .login-wrapper {
-      background: var(--surface);
+    .logo-ring img {
       width: 100%;
-      max-width: 400px;
-      border-radius: 20px;
-      padding: 28px 24px;
-      box-shadow: 0 16px 32px rgba(0,0,0,0.35);
-      text-align: center;
-    }
-    .login-logo {
-      width: 84px;
-      height: 84px;
-      border-radius: 18px;
+      height: 100%;
+      border-radius: 19px;
       object-fit: cover;
-      margin: 0 auto 12px;
-      display: block;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background: #0F172A;
     }
-    .brand-badge {
-      display: inline-block;
-      background: var(--petrol);
-      color: #FFFFFF;
+
+    .company-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.16);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #FCD34D;
       font-size: 11px;
       font-weight: 800;
-      padding: 5px 12px;
+      letter-spacing: 1px;
+      padding: 4px 12px;
       border-radius: 99px;
-      letter-spacing: 0.5px;
       margin-bottom: 10px;
     }
-    .login-wrapper h1 {
+
+    .login-container h1 {
       font-size: 24px;
-      font-weight: 900;
-      color: var(--text);
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: #FFFFFF;
     }
-    .subtitle {
-      color: var(--text-sub);
-      font-size: 14px;
-      margin-bottom: 22px;
+    .login-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 4px 0 22px;
     }
-    .input-group {
+
+    .field-group {
       text-align: left;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
-    .input-group label {
+    .field-group label {
       display: block;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
       margin-bottom: 6px;
-      color: var(--text);
+      padding-left: 4px;
     }
-    input, textarea {
+
+    .glass-input {
       width: 100%;
       padding: 14px 16px;
-      font-size: 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(15, 23, 42, 0.55);
+      color: #FFFFFF;
+      font-size: 17px;
       font-weight: 600;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      background: #F8FAFC;
-      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    input:focus, textarea:focus {
+    .glass-input::placeholder {
+      color: rgba(148, 163, 184, 0.55);
+    }
+    .glass-input:focus {
       outline: none;
-      border-color: var(--petrol);
-      background: #FFFFFF;
+      border-color: var(--solar);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
     }
     #login-pin {
-      letter-spacing: 8px;
       text-align: center;
-      font-size: 24px;
+      letter-spacing: 10px;
+      font-size: 22px;
     }
-    .btn-xl {
+
+    .btn-solar-glass {
       width: 100%;
-      padding: 18px;
-      font-size: 16px;
-      font-weight: 900;
+      padding: 16px;
+      margin-top: 6px;
       border: none;
-      border-radius: 14px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: #0B1120;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
       cursor: pointer;
-      margin-top: 8px;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      transition: transform 0.15s ease;
     }
-    .btn-solar {
-      background: var(--solar);
-      color: #0F172A;
-      box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
-    }
-    .btn-solar:active { transform: scale(0.98); }
+    .btn-solar-glass:active { transform: scale(0.97); }
+
     .error-msg {
-      color: var(--red);
+      color: #FCA5A5;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 12px;
+      min-height: 18px;
+    }
+
+    /* RODAPÉ FLOWNEST */
+    .flownest-footer {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(148, 163, 184, 0.7);
+      letter-spacing: 0.4px;
+      padding: 12px 0 4px;
+      width: 100%;
+    }
+    .flownest-footer strong {
+      color: #E2E8F0;
       font-weight: 700;
-      margin-top: 14px;
-      font-size: 14px;
     }
 
     /* ==========================================
-       2. HEADER & RESUMO DO DIA
+       2. HEADER GLASS & RESUMO
        ========================================== */
-    .app-header {
-      background: var(--petrol);
-      color: #FFFFFF;
-      padding: calc(14px + var(--safe-top)) 16px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .glass-header {
       position: sticky;
       top: 0;
       z-index: 100;
+      background: rgba(11, 19, 43, 0.75);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--glass-border);
+      padding: calc(12px + var(--safe-top)) 16px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .role-tag {
-      background: var(--solar);
-      color: #0F172A;
+
+    .brand-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-mini img {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .brand-mini span {
+      display: block;
       font-size: 10px;
-      font-weight: 900;
-      padding: 2px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.5px;
-    }
-    .app-header h2 {
-      font-size: 20px;
       font-weight: 800;
-      margin-top: 2px;
+      color: var(--solar);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
     }
+    .brand-mini h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
     .header-actions {
       display: flex;
       gap: 8px;
     }
-    .icon-btn {
-      width: 44px;
-      height: 44px;
+    .glass-icon-btn {
+      width: 38px;
+      height: 38px;
       border-radius: 12px;
-      border: none;
-      background: rgba(255,255,255,0.18);
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid var(--glass-border);
       color: #FFFFFF;
-      font-size: 20px;
+      font-size: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
     }
-    .icon-btn:active { background: rgba(255,255,255,0.3); }
+    .glass-icon-btn:active { background: rgba(255, 255, 255, 0.2); }
 
-    .day-summary-bar {
-      background: var(--petrol-dark);
-      color: #FFFFFF;
-      padding: 10px 16px;
+    /* MÉTRICAS RÁPIDAS */
+    .metrics-strip {
+      max-width: 540px;
+      margin: 12px auto 4px;
+      padding: 0 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .metric-card {
+      border-radius: 18px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
-      gap: 20px;
-      font-size: 13px;
+      justify-content: space-between;
     }
-    .summary-label {
-      opacity: 0.85;
-      margin-right: 4px;
-    }
-    .queue-pill {
-      margin-left: auto;
-      background: var(--solar);
-      color: #0F172A;
-      padding: 4px 10px;
-      border-radius: 99px;
-      font-weight: 800;
+    .metric-card span {
       font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .metric-card strong {
+      font-size: 20px;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+
+    .queue-banner {
+      max-width: 540px;
+      margin: 8px auto 0;
+      padding: 0 14px;
+    }
+    .queue-btn {
+      width: 100%;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #FCD34D;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
     }
 
     /* ==========================================
-       CARDS DA AGENDA
+       3. AGENDA & CARDS DE OBRA
        ========================================== */
-    .main-content {
-      padding: 14px 14px calc(95px + var(--safe-bottom));
-      max-width: 600px;
+    .main-scroll {
+      max-width: 540px;
       margin: 0 auto;
+      padding: 10px 14px calc(92px + var(--safe-bottom));
     }
-    .section-heading {
-      font-size: 13px;
+
+    .section-label {
+      font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text-sub);
-      margin: 18px 0 10px;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      margin: 14px 4px 8px;
     }
-    .section-heading:first-child { margin-top: 4px; }
 
     .obra-card {
-      background: var(--surface);
-      border-radius: 16px;
+      border-radius: 22px;
       padding: 16px;
-      margin-bottom: 14px;
-      border: 2px solid var(--border);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-bottom: 12px;
+      transition: transform 0.15s ease;
     }
-    .obra-card.destaque-hoje { border-color: var(--petrol); }
+    .obra-card:active { transform: scale(0.985); }
+    .obra-card.today-glow {
+      border-color: rgba(245, 158, 11, 0.45);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(245, 158, 11, 0.2);
+    }
+
     .card-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
     }
-    .status-badge {
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 900;
+
+    .status-pill {
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
     }
-    .st-Agendada { background: #E2E8F0; color: #334155; }
-    .st-ACaminho { background: var(--blue-bg); color: var(--blue); }
-    .st-EmAndamento { background: var(--amber-bg); color: var(--amber); }
-    .st-ComProblema { background: var(--red-bg); color: var(--red); }
-    .st-Concluida { background: var(--green-bg); color: var(--green); }
+    .st-Agendada { background: rgba(148, 163, 184, 0.2); color: #CBD5E1; border: 1px solid rgba(148, 163, 184, 0.3); }
+    .st-ACaminho { background: rgba(56, 189, 248, 0.2); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.35); }
+    .st-EmAndamento { background: rgba(245, 158, 11, 0.22); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .st-ComProblema { background: rgba(239, 68, 68, 0.22); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .st-Concluida { background: rgba(16, 185, 129, 0.22); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
 
-    .card-date {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-sub);
+    .date-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
     }
-    .card-client {
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--text);
+
+    .client-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
       margin-bottom: 4px;
     }
-    .card-address {
-      font-size: 15px;
-      color: var(--text-sub);
+    .address-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
       margin-bottom: 10px;
     }
-    .card-specs-pill {
-      background: #F1F5F9;
-      border: 1px solid #CBD5E1;
+
+    .specs-chip {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       padding: 8px 12px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-    .card-alert-mini {
-      background: #FEF08A;
-      color: #713F12;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-    .card-actions {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 10px;
-    }
-    .btn-card-route {
-      background: var(--blue);
-      color: #FFFFFF;
-      text-decoration: none;
-      padding: 14px;
       border-radius: 12px;
-      font-weight: 800;
-      font-size: 15px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #E2E8F0;
+      margin-bottom: 10px;
+    }
+
+    .alert-strip {
+      background: rgba(245, 158, 11, 0.16);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #FDE68A;
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .card-btns {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 8px;
+    }
+    .btn-glass-route {
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #7DD3FC;
+      text-decoration: none;
+      padding: 11px;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 700;
       text-align: center;
     }
-    .btn-card-open {
-      background: var(--petrol);
+    .btn-glass-open {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       color: #FFFFFF;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 800;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    /* NAVEGAÇÃO INFERIOR */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--surface);
-      border-top: 2px solid var(--border);
-      display: flex;
-      padding-bottom: var(--safe-bottom);
-      z-index: 150;
-    }
-    .nav-item {
-      flex: 1;
-      background: none;
-      border: none;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
+      padding: 11px;
+      border-radius: 13px;
       font-size: 13px;
-      font-weight: 800;
-      color: var(--text-sub);
+      font-weight: 700;
       cursor: pointer;
     }
-    .nav-item.active { color: var(--petrol); }
-    .nav-icon { font-size: 20px; }
 
     /* ==========================================
-       3. TELA DE DETALHES DA OBRA
+       TAB BAR FLUTUANTE ESTILO IOS
        ========================================== */
-    .detail-header { gap: 10px; }
-    .back-btn {
-      background: rgba(255,255,255,0.2);
-      border: none;
-      color: #FFFFFF;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .header-center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .os-code { font-weight: 900; font-size: 16px; }
-    .os-date { font-size: 12px; opacity: 0.85; }
-
-    .detail-scroll {
-      padding-bottom: calc(175px + var(--safe-bottom));
-    }
-
-    .critical-alert {
-      background: #FEF08A;
-      border: 3px solid #CA8A04;
-      color: #713F12;
-      padding: 14px;
-      border-radius: 14px;
-      margin-bottom: 14px;
-    }
-    .alert-header {
-      font-weight: 900;
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
-    .critical-alert p {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .card {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-      border: 1px solid var(--border);
-    }
-    .card-label {
-      font-size: 12px;
-      font-weight: 900;
-      color: var(--petrol);
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-    .client-name {
-      font-size: 22px;
-      font-weight: 900;
-      margin-bottom: 4px;
-    }
-    .address-full {
-      font-size: 16px;
-      color: var(--text-sub);
-      margin-bottom: 14px;
-    }
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 0.9fr;
-      gap: 8px;
-    }
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 8px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 800;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-maps { background: var(--blue); color: #FFFFFF; }
-    .btn-whats { background: var(--green); color: #FFFFFF; }
-    .btn-call { background: #E2E8F0; color: var(--text); }
-
-    /* GUIA TÉCNICO */
-    .spec-highlight {
-      background: #FFFBEB;
-      border: 2px solid var(--solar);
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-    }
-    .spec-highlight span {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--amber);
-      text-transform: uppercase;
-    }
-    .spec-highlight strong {
-      font-size: 17px;
-      font-weight: 900;
-      color: var(--text);
-    }
-
-    .spec-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .spec-box {
-      background: #F8FAFC;
-      border: 1px solid #E2E8F0;
-      padding: 10px 12px;
-      border-radius: 10px;
-    }
-    .spec-box.full { grid-column: span 2; }
-    .spec-box span {
-      display: block;
-      font-size: 12px;
-      color: var(--text-sub);
-      font-weight: 600;
-    }
-    .spec-box strong {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    /* CHECKLIST DE CARGA */
-    .card-header-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .progress-badge {
-      background: var(--petrol);
-      color: #FFFFFF;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 3px 10px;
-      border-radius: 99px;
-    }
-    .card-hint {
-      font-size: 13px;
-      color: var(--text-sub);
-      margin-bottom: 10px;
-    }
-    .check-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 10px;
-      border-bottom: 1px solid #E2E8F0;
-      cursor: pointer;
-      user-select: none;
-    }
-    .check-row:last-child { border-bottom: none; }
-    .check-row input[type="checkbox"] {
-      width: 26px;
-      height: 26px;
-      accent-color: var(--green);
-      flex-shrink: 0;
-    }
-    .check-row span {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .check-row.done span {
-      text-decoration: line-through;
-      color: var(--text-sub);
-    }
-
-    .time-log-bar {
-      display: flex;
-      justify-content: space-around;
-      background: #E2E8F0;
-      padding: 10px;
-      border-radius: 12px;
-      font-size: 14px;
-      color: var(--text-sub);
-    }
-
-    /* DOCK DE AÇÕES EM TEMPO REAL */
-    .action-dock {
+    .ios-tabbar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--surface);
-      border-top: 2px solid var(--border);
-      padding: 10px 12px calc(10px + var(--safe-bottom));
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
-      z-index: 200;
+      bottom: calc(12px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 360px;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      border-radius: 99px;
+      padding: 5px;
+      display: flex;
+      gap: 4px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      z-index: 150;
     }
-    .dock-btn {
-      padding: 15px 8px;
+    .tab-pill {
+      flex: 1;
+      background: transparent;
       border: none;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 900;
-      color: #FFFFFF;
-      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 99px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    .dock-btn:active { transform: scale(0.97); }
-    .btn-route { background: var(--blue); }
-    .btn-start { background: #D97706; }
-    .btn-problem { background: var(--red); }
-    .btn-finish { background: var(--green); }
+    .tab-pill.active {
+      background: rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+    }
 
     /* ==========================================
-       4. BOTTOM SHEET MODAL (PROBLEMA)
+       4. TELA DE DETALHES DA OBRA
+       ========================================== */
+    .back-pill {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--glass-border);
+      color: #FFFFFF;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .detail-scroll {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 12px 14px calc(155px + var(--safe-bottom));
+    }
+
+    .critical-glass-alert {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.55);
+      border-radius: 18px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+    .critical-glass-alert strong {
+      display: block;
+      font-size: 11px;
+      color: #FCD34D;
+      letter-spacing: 0.6px;
+      margin-bottom: 2px;
+    }
+    .critical-glass-alert p {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FEF3C7;
+    }
+
+    .detail-card {
+      border-radius: 22px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .micro-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--solar);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .contact-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 0.9fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .action-chip {
+      padding: 11px 6px;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .chip-maps { background: rgba(56, 189, 248, 0.22); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .chip-whats { background: rgba(16, 185, 129, 0.22); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .chip-call { background: rgba(255, 255, 255, 0.12); color: #F8FAFC; border: 1px solid var(--glass-border); }
+
+    .string-banner {
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+    .string-banner span {
+      display: block;
+      font-size: 11px;
+      color: #FCD34D;
+      font-weight: 700;
+    }
+    .string-banner strong {
+      font-size: 15px;
+      color: #FFFFFF;
+    }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .spec-cell {
+      background: rgba(15, 23, 42, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 12px;
+      border-radius: 13px;
+    }
+    .spec-cell.full { grid-column: span 2; }
+    .spec-cell span {
+      display: block;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .spec-cell strong {
+      font-size: 14px;
+      color: #FFFFFF;
+    }
+
+    /* CHECKLIST GLASS */
+    .check-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .prog-pill {
+      background: rgba(56, 189, 248, 0.2);
+      color: #7DD3FC;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 99px;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+    }
+    .check-item:last-child { border-bottom: none; }
+    .check-item input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--green);
+      flex-shrink: 0;
+    }
+    .check-item span {
+      font-size: 14px;
+      font-weight: 600;
+      color: #F1F5F9;
+    }
+    .check-item.done span {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+    }
+
+    .time-strip {
+      display: flex;
+      justify-content: space-around;
+      border-radius: 14px;
+      padding: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .time-strip strong { color: #FFFFFF; }
+
+    /* DOCK DE AÇÕES FIXO NO RODAPÉ */
+    .glass-action-dock {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(11, 19, 43, 0.85);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-top: 1px solid var(--glass-border);
+      padding: 10px 12px calc(10px + var(--safe-bottom));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      z-index: 200;
+    }
+    .dock-action {
+      padding: 13px 8px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: transform 0.12s;
+    }
+    .dock-action:active { transform: scale(0.96); }
+    .act-route { background: rgba(56, 189, 248, 0.22); color: #7DD3FC; border-color: rgba(56, 189, 248, 0.45); }
+    .act-start { background: rgba(245, 158, 11, 0.24); color: #FCD34D; border-color: rgba(245, 158, 11, 0.5); }
+    .act-prob { background: rgba(239, 68, 68, 0.22); color: #FCA5A5; border-color: rgba(239, 68, 68, 0.45); }
+    .act-done { background: linear-gradient(135deg, #10B981, #059669); color: #FFFFFF; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); }
+
+    /* ==========================================
+       5. MODAL BOTTOM SHEET GLASS (PROBLEMA)
        ========================================== */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(4, 8, 18, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       display: flex;
       align-items: flex-end;
       z-index: 1000;
     }
-    .modal-sheet {
-      background: var(--surface);
+    .glass-sheet {
       width: 100%;
-      border-radius: 24px 24px 0 0;
-      padding: 12px 20px calc(24px + var(--safe-bottom));
-      animation: slideUp 0.25s ease-out;
+      max-width: 540px;
+      margin: 0 auto;
+      background: rgba(17, 27, 48, 0.92);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-top: 1px solid var(--glass-highlight);
+      border-radius: 28px 28px 0 0;
+      padding: 12px 18px calc(22px + var(--safe-bottom));
+      animation: sheetRise 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    @keyframes slideUp {
+    @keyframes sheetRise {
       from { transform: translateY(100%); }
       to { transform: translateY(0); }
     }
-    .sheet-handle {
-      width: 44px;
-      height: 5px;
-      background: #CBD5E1;
+    .grabber {
+      width: 40px;
+      height: 4px;
       border-radius: 99px;
+      background: rgba(255, 255, 255, 0.25);
       margin: 0 auto 14px;
-    }
-    .modal-desc {
-      font-size: 14px;
-      color: var(--text-sub);
-      margin: 4px 0 14px;
     }
     .reasons-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-bottom: 14px;
+      margin: 12px 0;
     }
-    .reason-chip {
-      padding: 12px 8px;
-      border: 2px solid var(--border);
-      background: #F8FAFC;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 800;
+    .reason-pill {
+      padding: 11px 10px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--glass-border);
+      color: #E2E8F0;
+      font-size: 12px;
+      font-weight: 700;
       text-align: left;
       cursor: pointer;
     }
-    .reason-chip.active {
+    .reason-pill.active {
+      background: rgba(239, 68, 68, 0.25);
       border-color: var(--red);
-      background: var(--red-bg);
-      color: var(--red);
+      color: #FCA5A5;
     }
-    .modal-actions {
+    .sheet-btns {
       display: grid;
       grid-template-columns: 1fr 1.5fr;
       gap: 10px;
+      margin-top: 12px;
     }
-    .btn-cancel { background: #E2E8F0; color: var(--text); }
-    .btn-danger-solid { background: var(--red); color: #FFFFFF; font-size: 15px; }
+    .btn-ghost {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--glass-border);
+      color: #FFFFFF;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-danger-glow {
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+      color: #FFFFFF;
+      font-weight: 800;
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <!-- BANNER OFFLINE -->
-  <div id="offline-banner" class="offline-banner hidden">
-    📡 Sem internet — Ações salvas na fila para envio automático.
+  <!-- AVISO OFFLINE -->
+  <div id="offline-banner" class="offline-pill hidden">
+    📡 Modo Offline — Sincronização automática ao reconectar
   </div>
 
   <!-- TOAST -->
@@ -718,199 +853,222 @@
   <!-- LOADER -->
   <div id="loader" class="loader-overlay hidden">
     <div class="spinner"></div>
-    <p id="loader-text">Sincronizando...</p>
+    <p id="loader-text" style="font-size: 14px; font-weight: 600;">Sincronizando...</p>
   </div>
 
   <!-- ==========================================
        1. TELA DE LOGIN
        ========================================== -->
   <section id="view-login" class="view">
-    <div class="login-wrapper">
-      <img src="logotn.jpg" alt="Logo" class="login-logo">
-      <div class="brand-badge">SOLARINVEST CAMPO</div>
+    <div class="login-container glass-panel">
+      <div class="logo-ring">
+        <img src="logotn.jpg" alt="TNSolar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230F172A%22/><text x=%2250%22 y=%2262%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%23F59E0B%22>☀️</text></svg>'">
+      </div>
+      <div class="company-pill">TNSOLAR • CAMPO</div>
       <h1>Acesso Técnico</h1>
-      <p class="subtitle">Entre com seu celular e PIN de 4 dígitos</p>
+      <p class="login-sub">Entre com seu celular e PIN de 4 dígitos</p>
 
       <form id="form-login" autocomplete="off">
-        <div class="input-group">
-          <label for="login-tel">Seu Celular (com DDD)</label>
-          <input type="tel" id="login-tel" inputmode="tel" placeholder="(62) 99999-9999" required>
+        <div class="field-group">
+          <label for="login-tel">Celular (com DDD)</label>
+          <input type="tel" id="login-tel" class="glass-input" inputmode="tel" placeholder="(62) 99999-9999" required>
         </div>
 
-        <div class="input-group">
-          <label for="login-pin">PIN de 4 Dígitos</label>
-          <input type="password" id="login-pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" required>
+        <div class="field-group">
+          <label for="login-pin">PIN de Acesso</label>
+          <input type="password" id="login-pin" class="glass-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" required>
         </div>
 
-        <button type="submit" class="btn btn-solar btn-xl">
-          ENTRAR NA MINHA AGENDA
+        <button type="submit" class="btn-solar-glass">
+          ENTRAR NA AGENDA
         </button>
       </form>
 
       <p id="login-erro" class="error-msg"></p>
     </div>
+
+    <footer class="flownest-footer">
+      Desenvolvido by <strong>FlowNest</strong>
+    </footer>
   </section>
 
   <!-- ==========================================
        2. TELA PRINCIPAL (AGENDA & HISTÓRICO)
        ========================================== -->
   <section id="view-home" class="view hidden">
-    <header class="app-header">
-      <div class="header-info">
-        <span class="role-tag">EQUIPE TÉCNICA</span>
-        <h2 id="colab-nome">Olá, Instalador</h2>
+    <header class="glass-header">
+      <div class="brand-mini">
+        <img src="logotn.jpg" alt="TNSolar" onerror="this.style.display='none'">
+        <div>
+          <span>TNSOLAR</span>
+          <h2 id="colab-nome">Olá, Técnico</h2>
+        </div>
       </div>
       <div class="header-actions">
-        <button onclick="sincronizarDados(true)" class="icon-btn" aria-label="Atualizar">🔄</button>
-        <button onclick="confirmarLogout()" class="icon-btn" aria-label="Sair">🚪</button>
+        <button onclick="sincronizarDados(true)" class="glass-icon-btn" aria-label="Atualizar">🔄</button>
+        <button onclick="confirmarLogout()" class="glass-icon-btn" aria-label="Sair">🚪</button>
       </div>
     </header>
 
-    <div class="day-summary-bar">
-      <div>
-        <span class="summary-label">Obras Hoje:</span>
+    <div class="metrics-strip">
+      <div class="metric-card glass-panel">
+        <span>Obras Hoje</span>
         <strong id="count-hoje">0</strong>
       </div>
-      <div>
-        <span class="summary-label">Concluídas (Mês):</span>
-        <strong id="count-mes">0</strong>
-      </div>
-      <div id="fila-offline-badge" class="queue-pill hidden" onclick="processarFilaOffline()">
-        ⏳ <span id="fila-count">0</span> pendente(s)
+      <div class="metric-card glass-panel">
+        <span>Concluídas (Mês)</span>
+        <strong id="count-mes" style="color: var(--green);">0</strong>
       </div>
     </div>
 
-    <main id="tab-agenda" class="main-content">
-      <div id="lista-obras-agenda"></div>
-    </main>
-
-    <main id="tab-historico" class="main-content hidden">
-      <h3 class="section-heading">Obras Finalizadas Neste Mês</h3>
-      <div id="lista-obras-historico"></div>
-    </main>
-
-    <nav class="bottom-nav">
-      <button class="nav-item active" onclick="mudarAba('agenda', this)">
-        <span class="nav-icon">📋</span>
-        <span>Minha Agenda</span>
+    <div id="fila-offline-box" class="queue-banner hidden">
+      <button onclick="processarFilaOffline()" class="queue-btn">
+        ⏳ <span id="fila-count">0</span> atualização(ões) aguardando sinal — Toque para reenviar
       </button>
-      <button class="nav-item" onclick="mudarAba('historico', this)">
-        <span class="nav-icon">✅</span>
-        <span>Histórico</span>
+    </div>
+
+    <main id="tab-agenda" class="main-scroll">
+      <div id="lista-obras-agenda"></div>
+      <footer class="flownest-footer" style="margin-top: 16px;">
+        TNSolar • Desenvolvido by <strong>FlowNest</strong>
+      </footer>
+    </main>
+
+    <main id="tab-historico" class="main-scroll hidden">
+      <h3 class="section-label">Concluídas neste mês</h3>
+      <div id="lista-obras-historico"></div>
+      <footer class="flownest-footer" style="margin-top: 16px;">
+        TNSolar • Desenvolvido by <strong>FlowNest</strong>
+      </footer>
+    </main>
+
+    <nav class="ios-tabbar">
+      <button class="tab-pill active" onclick="mudarAba('agenda', this)">
+        📋 Minha Agenda
+      </button>
+      <button class="tab-pill" onclick="mudarAba('historico', this)">
+        ✅ Histórico
       </button>
     </nav>
   </section>
 
   <!-- ==========================================
-       3. TELA DE DETALHES DA OBRA
+       3. DETALHES DA OBRA
        ========================================== -->
   <section id="view-detalhes" class="view hidden">
-    <header class="app-header detail-header">
-      <button onclick="voltarParaAgenda()" class="back-btn">← Voltar</button>
-      <div class="header-center">
-        <span id="det-id" class="os-code">OS-0000</span>
-        <span id="det-data" class="os-date">00/00/0000</span>
+    <header class="glass-header">
+      <button onclick="voltarParaAgenda()" class="back-pill">← Voltar</button>
+      <div style="text-align: center;">
+        <strong id="det-id" style="display:block; font-size: 14px;">OS-0000</strong>
+        <span id="det-data" style="font-size: 11px; color: var(--text-secondary);">00/00/0000</span>
       </div>
-      <span id="det-status" class="status-badge st-Agendada">Agendada</span>
+      <span id="det-status" class="status-pill st-Agendada">Agendada</span>
     </header>
 
-    <main class="main-content detail-scroll">
-      <div id="box-alerta" class="critical-alert hidden">
-        <div class="alert-header">⚠️ ATENÇÃO ANTES DE ENTRAR</div>
+    <main class="detail-scroll">
+      <div id="box-alerta" class="critical-glass-alert hidden">
+        <strong>⚠️ ATENÇÃO NO LOCAL</strong>
         <p id="det-alerta"></p>
       </div>
 
-      <div class="card">
-        <div class="card-label">CLIENTE & ENDEREÇO</div>
-        <h3 id="det-cliente" class="client-name">Nome do Cliente</h3>
-        <p id="det-endereco" class="address-full">Endereço completo</p>
+      <div class="detail-card glass-panel">
+        <div class="micro-title">Cliente & Localização</div>
+        <h3 id="det-cliente" class="client-title">Nome do Cliente</h3>
+        <p id="det-endereco" class="address-sub" style="margin-bottom:0;">Endereço completo</p>
 
-        <div class="contact-grid">
-          <a id="btn-maps" href="#" target="_blank" class="btn btn-maps">🗺️ GPS / Rota</a>
-          <a id="btn-whats" href="#" target="_blank" class="btn btn-whats">💬 WhatsApp</a>
-          <a id="btn-ligar" href="#" class="btn btn-call">📞 Ligar</a>
+        <div class="contact-row">
+          <a id="btn-maps" href="#" target="_blank" class="action-chip chip-maps">🗺️ Rota</a>
+          <a id="btn-whats" href="#" target="_blank" class="action-chip chip-whats">💬 WhatsApp</a>
+          <a id="btn-ligar" href="#" class="action-chip chip-call">📞 Ligar</a>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-label">⚡ GUIA TÉCNICO DE MONTAGEM</div>
+      <div class="detail-card glass-panel">
+        <div class="micro-title">⚡ Guia Técnico de Montagem</div>
         
-        <div class="spec-highlight">
+        <div class="string-banner">
           <span>Divisão de Strings</span>
           <strong id="det-strings">-</strong>
         </div>
 
-        <div class="spec-grid">
-          <div class="spec-box">
+        <div class="specs-grid">
+          <div class="spec-cell">
             <span>Qtd. Placas</span>
             <strong id="det-placas">-</strong>
           </div>
-          <div class="spec-box">
+          <div class="spec-cell">
             <span>Telhado</span>
             <strong id="det-telhado">-</strong>
           </div>
-          <div class="spec-box full">
+          <div class="spec-cell full">
             <span>Modelo do Inversor</span>
             <strong id="det-inversor">-</strong>
           </div>
-          <div class="spec-box">
+          <div class="spec-cell">
             <span>Local Inversor</span>
             <strong id="det-local-inv">-</strong>
           </div>
-          <div class="spec-box">
+          <div class="spec-cell">
             <span>Local Padrão</span>
             <strong id="det-local-pad">-</strong>
           </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header-flex">
-          <div class="card-label">🚚 CONFERÊNCIA DE CARGA</div>
-          <span id="checklist-progresso" class="progress-badge">0/0</span>
+      <div class="detail-card glass-panel">
+        <div class="check-header">
+          <div class="micro-title" style="margin-bottom:0;">🚚 Conferência de Carga</div>
+          <span id="checklist-progresso" class="prog-pill">0/0</span>
         </div>
-        <p class="card-hint">Marque os itens conferidos na caminhonete antes de sair:</p>
-        <div id="det-checklist" class="checklist-list"></div>
+        <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+          Confira os itens antes de sair da base:
+        </p>
+        <div id="det-checklist"></div>
       </div>
 
-      <div class="time-log-bar">
+      <div class="time-strip glass-panel">
         <span>Início: <strong id="det-hora-ini">--:--</strong></span>
         <span>Término: <strong id="det-hora-fim">--:--</strong></span>
       </div>
+
+      <footer class="flownest-footer" style="margin-top: 14px;">
+        TNSolar • Desenvolvido by <strong>FlowNest</strong>
+      </footer>
     </main>
 
-    <footer class="action-dock">
-      <button onclick="dispararStatus('A Caminho')" class="dock-btn btn-route">🚚 Estou a Caminho</button>
-      <button onclick="dispararStatus('Em Andamento')" class="dock-btn btn-start">⚡ Iniciei Instalação</button>
-      <button onclick="abrirModalProblema()" class="dock-btn btn-problem">🚨 Problema</button>
-      <button onclick="confirmarFinalizacao()" class="dock-btn btn-finish">✅ Finalizar Obra</button>
+    <footer class="glass-action-dock">
+      <button onclick="dispararStatus('A Caminho')" class="dock-action act-route">🚚 A Caminho</button>
+      <button onclick="dispararStatus('Em Andamento')" class="dock-action act-start">⚡ Iniciar Obra</button>
+      <button onclick="abrirModalProblema()" class="dock-action act-prob">🚨 Problema</button>
+      <button onclick="confirmarFinalizacao()" class="dock-action act-done">✅ Finalizar</button>
     </footer>
   </section>
 
   <!-- ==========================================
-       4. MODAL DE REPORTAR PROBLEMA
+       4. MODAL REPORTAR PROBLEMA
        ========================================== -->
   <div id="modal-problema" class="modal-backdrop hidden">
-    <div class="modal-sheet">
-      <div class="sheet-handle"></div>
-      <h3>🚨 Reportar Problema na Obra</h3>
-      <p class="modal-desc">Informe o ocorrido para registrar na OS:</p>
+    <div class="glass-sheet">
+      <div class="grabber"></div>
+      <h3 style="font-size: 18px; font-weight: 800;">🚨 Reportar Ocorrência</h3>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">
+        Selecione o motivo para registrar na OS:
+      </p>
 
       <div class="reasons-grid">
-        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Faltou material na carga')">📦 Faltou material</button>
-        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Problema estrutural no telhado')">🏠 Problema no telhado</button>
-        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Cliente ausente / portão fechado')">🔒 Cliente ausente</button>
-        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Chuva / Risco elétrico no telhado')">⛈️ Chuva / Clima</button>
+        <button type="button" class="reason-pill" onclick="escolherMotivo(this, 'Faltou material na carga')">📦 Faltou material</button>
+        <button type="button" class="reason-pill" onclick="escolherMotivo(this, 'Problema estrutural no telhado')">🏠 Telhado / Estrutura</button>
+        <button type="button" class="reason-pill" onclick="escolherMotivo(this, 'Cliente ausente / portão fechado')">🔒 Cliente ausente</button>
+        <button type="button" class="reason-pill" onclick="escolherMotivo(this, 'Chuva / Risco climático')">⛈️ Chuva / Clima</button>
       </div>
 
-      <div class="input-group">
-        <label for="texto-problema">Observação curta (opcional):</label>
-        <textarea id="texto-problema" rows="3" placeholder="Ex: Faltaram 2 conectores MC4..."></textarea>
+      <div class="field-group" style="margin-bottom: 0;">
+        <textarea id="texto-problema" class="glass-input" rows="2" style="font-size: 14px;" placeholder="Observação adicional (opcional)..."></textarea>
       </div>
 
-      <div class="modal-actions">
-        <button type="button" onclick="fecharModalProblema()" class="btn btn-cancel">Cancelar</button>
-        <button type="button" onclick="enviarProblema()" class="btn btn-danger-solid">ENVIAR ALERTA</button>
+      <div class="sheet-btns">
+        <button type="button" onclick="fecharModalProblema()" class="btn-ghost">Cancelar</button>
+        <button type="button" onclick="enviarProblema()" class="btn-danger-glow">ENVIAR ALERTA</button>
       </div>
     </div>
   </div>
@@ -919,11 +1077,11 @@
     // =========================================================
     // CONFIGURAÇÃO DA API (COLE SUA URL DO GOOGLE APPS SCRIPT)
     // =========================================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbzGe-6Y_JcM0f7UxrXI3hl_2PPL2pfUzcqQDuk2EMf6lsmTsKC2TLYmrDp1sQPYAq0OFg/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxy4gljXBubArFos1QaPm6IN-wNPGj1_YWNHlSFaLoOF8To0VSHJoSCp7mVdA4PPp7UmA/exec";
 
-    const KEY_USER = "solar_colab_user";
-    const KEY_CACHE_OBRAS = "solar_colab_obras_cache";
-    const KEY_OFFLINE_QUEUE = "solar_colab_offline_queue";
+    const KEY_USER = "tnsolar_colab_user";
+    const KEY_CACHE_OBRAS = "tnsolar_colab_obras";
+    const KEY_OFFLINE_QUEUE = "tnsolar_colab_queue";
 
     let usuario = null;
     let minhasObras = [];
@@ -970,7 +1128,7 @@
     }
 
     // =========================================================
-    // LOGIN
+    // LOGIN (COM HEADERS CORRIGIDOS PARA APPS SCRIPT)
     // =========================================================
     document.getElementById("form-login").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -980,22 +1138,23 @@
       erroEl.textContent = "";
 
       if (telefone.length < 10 || pin.length !== 4) {
-        erroEl.textContent = "Digite o DDD + número e o PIN de 4 dígitos.";
+        erroEl.textContent = "Informe DDD + número e o PIN de 4 dígitos.";
         return;
       }
 
-      mostrarLoader(true, "Validando acesso...");
+      mostrarLoader(true, "Conectando à TNSolar...");
 
       try {
         const response = await fetch(API_URL, {
           method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({ action: "login", telefone, pin, playerId: "" })
         });
         const res = await response.json();
 
         if (res.status === "success") {
           if (res.user.perfil !== "Colaborador") {
-            erroEl.textContent = "Este app é exclusivo para instaladores em campo.";
+            erroEl.textContent = "Acesso exclusivo para equipe técnica em campo.";
             mostrarLoader(false);
             return;
           }
@@ -1004,10 +1163,10 @@
           vibrarCelular(40);
           entrarNaAgenda();
         } else {
-          erroEl.textContent = res.message || "Telefone ou PIN inválidos.";
+          erroEl.textContent = res.message || "Telefone ou PIN incorretos.";
         }
       } catch (err) {
-        erroEl.textContent = "Sem conexão com o servidor. Verifique sua internet.";
+        erroEl.textContent = "Falha de conexão. Verifique a URL do script ou sua internet.";
       } finally {
         mostrarLoader(false);
       }
@@ -1021,7 +1180,7 @@
     }
 
     function confirmarLogout() {
-      if (confirm("Deseja realmente sair da sua conta?")) {
+      if (confirm("Deseja sair da sua conta?")) {
         localStorage.removeItem(KEY_USER);
         usuario = null;
         trocarTela("view-login");
@@ -1029,7 +1188,7 @@
     }
 
     // =========================================================
-    // SINCRONIZAÇÃO E CACHE
+    // SINCRONIZAÇÃO DE DADOS
     // =========================================================
     function carregarCacheLocal() {
       const cache = localStorage.getItem(KEY_CACHE_OBRAS);
@@ -1046,11 +1205,11 @@
         return;
       }
 
-      if (exibirFeedback) mostrarLoader(true, "Buscando obras...");
+      if (exibirFeedback) mostrarLoader(true, "Atualizando agenda...");
 
       try {
         await processarFilaOffline();
-        const url = `${API_URL}?action=getDados&perfil=Colaborador&userId=${usuario.id}`;
+        const url = `${API_URL}?action=getDados&perfil=Colaborador&userId=${encodeURIComponent(usuario.id)}`;
         const response = await fetch(url);
         const data = await response.json();
 
@@ -1058,7 +1217,7 @@
           minhasObras = data.obras || [];
           localStorage.setItem(KEY_CACHE_OBRAS, JSON.stringify(minhasObras));
           renderizarListas();
-          if (exibirFeedback) mostrarToast("✅ Agenda atualizada!");
+          if (exibirFeedback) mostrarToast("✅ Agenda sincronizada!");
         }
       } catch (err) {
         if (exibirFeedback) mostrarToast("⚠️ Usando agenda salva no aparelho");
@@ -1068,7 +1227,7 @@
     }
 
     // =========================================================
-    // RENDERIZAÇÃO DE LISTAS
+    // RENDERIZAÇÃO DA AGENDA
     // =========================================================
     function renderizarListas() {
       const containerAgenda = document.getElementById("lista-obras-agenda");
@@ -1106,24 +1265,26 @@
 
       let htmlAgenda = "";
       if (grpHoje.length) {
-        htmlAgenda += `<h3 class="section-heading">🔥 HOJE (${grpHoje.length})</h3>`;
+        htmlAgenda += `<h3 class="section-label">🔥 Hoje (${grpHoje.length})</h3>`;
         htmlAgenda += grpHoje.map(o => montarCardObra(o, true)).join("");
       }
       if (grpAmanha.length) {
-        htmlAgenda += `<h3 class="section-heading">📅 AMANHÃ (${grpAmanha.length})</h3>`;
+        htmlAgenda += `<h3 class="section-label">📅 Amanhã (${grpAmanha.length})</h3>`;
         htmlAgenda += grpAmanha.map(o => montarCardObra(o, false)).join("");
       }
       if (grpProximos.length) {
-        htmlAgenda += `<h3 class="section-heading">🗓️ PRÓXIMOS DIAS (${grpProximos.length})</h3>`;
+        htmlAgenda += `<h3 class="section-label">🗓️ Próximos Dias (${grpProximos.length})</h3>`;
         htmlAgenda += grpProximos.map(o => montarCardObra(o, false)).join("");
       }
 
       if (!htmlAgenda) {
         htmlAgenda = `
-          <div class="card" style="text-align:center; padding: 32px 16px;">
-            <p style="font-size: 36px; margin-bottom: 8px;">☀️</p>
-            <strong>Nenhuma instalação pendente!</strong>
-            <p class="card-hint" style="margin-top:4px;">Toque em 🔄 acima para verificar novas escalas.</p>
+          <div class="obra-card glass-panel" style="text-align:center; padding: 32px 16px;">
+            <p style="font-size: 34px; margin-bottom: 8px;">☀️</p>
+            <strong style="font-size: 16px;">Nenhuma instalação pendente</strong>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+              Toque em 🔄 no topo para buscar novas escalas.
+            </p>
           </div>
         `;
       }
@@ -1132,7 +1293,7 @@
 
       containerHist.innerHTML = grpHistorico.length
         ? grpHistorico.map(o => montarCardObra(o, false)).join("")
-        : `<p class="card-hint" style="text-align:center; margin-top:20px;">Nenhuma obra concluída neste mês ainda.</p>`;
+        : `<p style="text-align:center; font-size: 13px; color: var(--text-secondary); margin-top: 24px;">Nenhuma obra concluída neste mês.</p>`;
     }
 
     function montarCardObra(obra, isHoje) {
@@ -1141,26 +1302,26 @@
       const mapsHref = obra.linkMaps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(obra.endereco || "")}`;
 
       return `
-        <article class="obra-card ${isHoje ? "destaque-hoje" : ""}" onclick="abrirObra('${obra.id}')">
+        <article class="obra-card glass-panel ${isHoje ? "today-glow" : ""}" onclick="abrirObra('${obra.id}')">
           <div class="card-top">
-            <span class="status-badge ${stClass}">${obra.status}</span>
-            <span class="card-date">${dataBR}</span>
+            <span class="status-pill ${stClass}">${obra.status}</span>
+            <span class="date-tag">${dataBR}</span>
           </div>
 
-          <h4 class="card-client">${obra.clienteNome}</h4>
-          <p class="card-address">📍 ${obra.endereco}</p>
+          <h4 class="client-title">${obra.clienteNome}</h4>
+          <p class="address-sub">📍 ${obra.endereco}</p>
 
-          <div class="card-specs-pill">
-            ⚡ ${obra.qtdPlacas} Placas • ${obra.tipoTelhado || "Telhado"} • ${obra.modeloInversor || "Inversor"}
+          <div class="specs-chip">
+            ⚡ ${obra.qtdPlacas || 0} Placas • ${obra.tipoTelhado || "Telhado"} • ${obra.modeloInversor || "Inversor"}
           </div>
 
-          ${obra.alertasAcesso ? `<div class="card-alert-mini">⚠️ ${obra.alertasAcesso}</div>` : ""}
+          ${obra.alertasAcesso ? `<div class="alert-strip">⚠️ ${obra.alertasAcesso}</div>` : ""}
 
-          <div class="card-actions">
-            <a href="${mapsHref}" target="_blank" onclick="event.stopPropagation()" class="btn-card-route">
+          <div class="card-btns">
+            <a href="${mapsHref}" target="_blank" onclick="event.stopPropagation()" class="btn-glass-route">
               🗺️ Rota
             </a>
-            <button type="button" class="btn-card-open">
+            <button type="button" class="btn-glass-open">
               Abrir Obra →
             </button>
           </div>
@@ -1182,7 +1343,7 @@
 
       const badge = document.getElementById("det-status");
       badge.textContent = obraAtual.status;
-      badge.className = "status-badge st-" + (obraAtual.status || "Agendada").replace(/\s+/g, "");
+      badge.className = "status-pill st-" + (obraAtual.status || "Agendada").replace(/\s+/g, "");
 
       const boxAlerta = document.getElementById("box-alerta");
       if (obraAtual.alertasAcesso) {
@@ -1224,18 +1385,18 @@
         .filter(Boolean);
 
       if (!itens.length) {
-        container.innerHTML = `<p class="card-hint">Nenhum item de carga listado nesta OS.</p>`;
+        container.innerHTML = `<p style="font-size: 12px; color: var(--text-secondary);">Nenhum item listado nesta OS.</p>`;
         document.getElementById("checklist-progresso").textContent = "0/0";
         return;
       }
 
-      const chaveStorage = `solar_chk_${obra.id}`;
+      const chaveStorage = `tnsolar_chk_${obra.id}`;
       const estadoSalvo = JSON.parse(localStorage.getItem(chaveStorage) || "{}");
 
       container.innerHTML = itens.map((texto, index) => {
         const marcado = !!estadoSalvo[index];
         return `
-          <label class="check-row ${marcado ? "done" : ""}">
+          <label class="check-item ${marcado ? "done" : ""}">
             <input type="checkbox" ${marcado ? "checked" : ""} onchange="alternarChecklist('${obra.id}', ${index}, ${itens.length}, this)">
             <span>${texto}</span>
           </label>
@@ -1247,7 +1408,7 @@
 
     function alternarChecklist(idObra, idx, total, inputEl) {
       vibrarCelular(25);
-      const chaveStorage = `solar_chk_${idObra}`;
+      const chaveStorage = `tnsolar_chk_${idObra}`;
       const estadoSalvo = JSON.parse(localStorage.getItem(chaveStorage) || "{}");
       estadoSalvo[idx] = inputEl.checked;
       localStorage.setItem(chaveStorage, JSON.stringify(estadoSalvo));
@@ -1272,7 +1433,7 @@
 
     async function dispararStatus(novoStatus, motivoProblema = "") {
       if (!obraAtual) return;
-      vibrarCelular(60);
+      vibrarCelular(50);
 
       const agoraHora = new Date().toTimeString().slice(0, 5);
 
@@ -1302,6 +1463,7 @@
       try {
         const res = await fetch(API_URL, {
           method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
@@ -1312,7 +1474,7 @@
         }
       } catch (err) {
         adicionarNaFilaOffline(payload);
-        mostrarToast("⚠️ Sinal fraco: salvo na fila para reenvio.");
+        mostrarToast("⚠️ Sinal fraco: salvo na fila.");
       } finally {
         mostrarLoader(false);
       }
@@ -1324,7 +1486,7 @@
     function abrirModalProblema() {
       motivoSelecionado = "";
       document.getElementById("texto-problema").value = "";
-      document.querySelectorAll(".reason-chip").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".reason-pill").forEach(c => c.classList.remove("active"));
       document.getElementById("modal-problema").classList.remove("hidden");
     }
 
@@ -1335,7 +1497,7 @@
     function escolherMotivo(btn, motivo) {
       vibrarCelular(25);
       motivoSelecionado = motivo;
-      document.querySelectorAll(".reason-chip").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".reason-pill").forEach(c => c.classList.remove("active"));
       btn.classList.add("active");
     }
 
@@ -1344,7 +1506,7 @@
       const textoFinal = [motivoSelecionado, obs].filter(Boolean).join(" - ");
 
       if (!textoFinal) {
-        alert("Selecione um motivo ou descreva o problema.");
+        alert("Selecione um motivo ou descreva a ocorrência.");
         return;
       }
 
@@ -1374,6 +1536,7 @@
         try {
           const res = await fetch(API_URL, {
             method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify(item)
           });
           const data = await res.json();
@@ -1392,12 +1555,12 @@
 
     function atualizarBadgeFila() {
       const fila = JSON.parse(localStorage.getItem(KEY_OFFLINE_QUEUE) || "[]");
-      const badge = document.getElementById("fila-offline-badge");
+      const box = document.getElementById("fila-offline-box");
       if (fila.length > 0) {
         document.getElementById("fila-count").textContent = fila.length;
-        badge.classList.remove("hidden");
+        box.classList.remove("hidden");
       } else {
-        badge.classList.add("hidden");
+        box.classList.add("hidden");
       }
     }
 
@@ -1410,7 +1573,7 @@
     }
 
     function mudarAba(aba, btn) {
-      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      document.querySelectorAll(".tab-pill").forEach(n => n.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById("tab-agenda").classList.toggle("hidden", aba !== "agenda");
       document.getElementById("tab-historico").classList.toggle("hidden", aba !== "historico");
