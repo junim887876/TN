@@ -105,13 +105,13 @@
 
     .hidden { display: none !important; }
 
-    /* ANIMAÇÃO DE TRANSIÇÃO DE TELA */
-    .view-animate {
-      animation: viewEnter 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    /* ANIMAÇÃO APENAS NO CONTEÚDO INTERNO (NÃO QUEBRA POSITION: FIXED DOS FILHOS) */
+    .view-animate .content-enter {
+      animation: viewEnter 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
     @keyframes viewEnter {
-      from { opacity: 0; transform: translateY(12px) scale(0.99); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* SUPERFÍCIE GLASS PREMIUM */
@@ -139,7 +139,7 @@
       top: calc(12px + var(--safe-top));
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(225, 29, 72, 0.9);
+      background: rgba(225, 29, 72, 0.92);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.25);
@@ -161,7 +161,7 @@
       top: calc(16px + var(--safe-top));
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.92);
+      background: rgba(15, 23, 42, 0.94);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--border-light);
@@ -368,7 +368,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(5, 8, 17, 0.78);
+      background: rgba(5, 8, 17, 0.86);
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border-bottom: 1px solid var(--border-subtle);
@@ -424,6 +424,16 @@
       transform: scale(0.94);
     }
 
+    .sync-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      display: inline-block;
+      margin-right: 4px;
+      box-shadow: 0 0 8px var(--emerald);
+    }
+
     /* MÉTRICAS */
     .kpi-grid {
       max-width: 540px;
@@ -463,34 +473,13 @@
     .kpi-solar { background: rgba(245, 158, 11, 0.15); color: var(--solar-light); }
     .kpi-green { background: rgba(16, 185, 129, 0.15); color: #34D399; }
 
-    .queue-banner {
-      max-width: 540px;
-      margin: 10px auto 0;
-      padding: 0 16px;
-    }
-    .queue-btn {
-      width: 100%;
-      background: rgba(245, 158, 11, 0.14);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      color: #FDE68A;
-      padding: 10px 14px;
-      border-radius: 14px;
-      font-size: 12px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
     /* ==========================================
        3. CARDS DE OBRA (AGENDA)
        ========================================== */
     .feed-container {
       max-width: 540px;
       margin: 0 auto;
-      padding: 8px 16px calc(98px + var(--safe-bottom));
+      padding: 8px 16px calc(105px + var(--safe-bottom));
     }
 
     .group-heading {
@@ -642,31 +631,41 @@
     }
     .btn-card-open:active { transform: scale(0.96); }
 
-    /* TAB BAR FLUTUANTE */
-    .floating-nav {
+    /* ==========================================
+       TAB BAR FIXA NA PARTE INFERIOR
+       ========================================== */
+    .bottom-tab-bar {
       position: fixed;
-      bottom: calc(14px + var(--safe-bottom));
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 32px);
-      max-width: 350px;
-      background: rgba(11, 17, 32, 0.85);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border: 1px solid var(--border-light);
-      border-radius: 99px;
-      padding: 5px;
-      display: flex;
-      gap: 4px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
-      z-index: 150;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      background: rgba(8, 13, 26, 0.94);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border-top: 1px solid var(--border-light);
+      padding: 10px 16px calc(10px + var(--safe-bottom));
+      z-index: 500;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.55);
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+    .bottom-tab-inner {
+      max-width: 540px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 4px;
     }
     .nav-tab {
-      flex: 1;
       background: transparent;
       border: none;
       padding: 11px 12px;
-      border-radius: 99px;
+      border-radius: 12px;
       color: var(--text-secondary);
       font-size: 13px;
       font-weight: 700;
@@ -675,12 +674,13 @@
       justify-content: center;
       gap: 7px;
       cursor: pointer;
-      transition: all 0.22s ease;
+      transition: background 0.2s ease, color 0.2s ease;
     }
     .nav-tab.active {
-      background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08));
-      color: #FFFFFF;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.1));
+      color: var(--solar-light);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 
     /* ==========================================
@@ -704,7 +704,7 @@
     .detail-body {
       max-width: 540px;
       margin: 0 auto;
-      padding: 14px 16px calc(165px + var(--safe-bottom));
+      padding: 14px 16px calc(155px + var(--safe-bottom));
     }
 
     .alert-hero {
@@ -904,19 +904,23 @@
     .time-bar strong { color: #FFFFFF; font-weight: 800; }
 
     /* ==========================================
-       DOCK DE AÇÕES DE CAMPO (4 BOTÕES PREMIUM)
+       DOCK DE AÇÕES DE CAMPO (FIXO NA PARTE INFERIOR)
        ========================================== */
     .command-dock {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(8, 13, 26, 0.88);
+      width: 100%;
+      background: rgba(8, 13, 26, 0.94);
       backdrop-filter: blur(28px) saturate(190%);
       -webkit-backdrop-filter: blur(28px) saturate(190%);
       border-top: 1px solid var(--border-light);
       padding: 12px 14px calc(12px + var(--safe-bottom));
-      z-index: 200;
+      z-index: 500;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
     .command-grid {
       max-width: 540px;
@@ -940,6 +944,9 @@
       transition: transform 0.14s ease, box-shadow 0.2s ease;
     }
     .cmd-btn:active { transform: scale(0.95); }
+    .cmd-btn.span-full {
+      grid-column: span 2;
+    }
 
     .cmd-transit {
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(2, 132, 199, 0.16));
@@ -1069,7 +1076,7 @@
   <!-- BANNER OFFLINE -->
   <div id="offline-banner" class="offline-pill hidden">
     <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
-    Modo Offline — Sincronização automática
+    Sem conexão com a internet
   </div>
 
   <!-- TOAST -->
@@ -1085,7 +1092,7 @@
        1. TELA DE LOGIN
        ========================================== -->
   <section id="view-login" class="view view-animate">
-    <div class="login-box glass-card">
+    <div class="login-box glass-card content-enter">
       <div class="brand-emblem">
         <img src="logotn.jpg" alt="TNSolar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230B1120%22/><circle cx=%2250%22 cy=%2250%22 r=%2222%22 fill=%22%23F59E0B%22/></svg>'">
       </div>
@@ -1129,7 +1136,7 @@
       <div class="user-profile">
         <img src="logotn.jpg" alt="TNSolar" onerror="this.style.display='none'">
         <div>
-          <span>TNSOLAR CAMPO</span>
+          <span><i class="sync-pulse"></i>TNSOLAR CAMPO</span>
           <h2 id="colab-nome">Olá, Técnico</h2>
         </div>
       </div>
@@ -1143,62 +1150,60 @@
       </div>
     </header>
 
-    <div class="kpi-grid">
-      <div class="kpi-box glass-card">
-        <div class="kpi-info">
-          <span>Obras Hoje</span>
-          <strong id="count-hoje">0</strong>
+    <div class="content-enter">
+      <div class="kpi-grid">
+        <div class="kpi-box glass-card">
+          <div class="kpi-info">
+            <span>Obras Hoje</span>
+            <strong id="count-hoje">0</strong>
+          </div>
+          <div class="kpi-icon kpi-solar">
+            <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </div>
         </div>
-        <div class="kpi-icon kpi-solar">
-          <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+
+        <div class="kpi-box glass-card">
+          <div class="kpi-info">
+            <span>Concluídas (Mês)</span>
+            <strong id="count-mes" style="color: #34D399;">0</strong>
+          </div>
+          <div class="kpi-icon kpi-green">
+            <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
         </div>
       </div>
 
-      <div class="kpi-box glass-card">
-        <div class="kpi-info">
-          <span>Concluídas (Mês)</span>
-          <strong id="count-mes" style="color: #34D399;">0</strong>
-        </div>
-        <div class="kpi-icon kpi-green">
-          <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        </div>
+      <main id="tab-agenda" class="feed-container">
+        <div id="lista-obras-agenda"></div>
+        <footer class="flownest-footer" style="margin-top: 20px;">
+          TNSolar • Desenvolvido by <strong>FlowNest</strong>
+        </footer>
+      </main>
+
+      <main id="tab-historico" class="feed-container hidden">
+        <h3 class="group-heading">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Concluídas neste mês
+        </h3>
+        <div id="lista-obras-historico"></div>
+        <footer class="flownest-footer" style="margin-top: 20px;">
+          TNSolar • Desenvolvido by <strong>FlowNest</strong>
+        </footer>
+      </main>
+    </div>
+
+    <!-- BARRA DE ABAS FIXA NA BASE -->
+    <nav class="bottom-tab-bar" aria-label="Navegação principal">
+      <div class="bottom-tab-inner">
+        <button class="nav-tab active" onclick="mudarAba('agenda', this)">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Minha Agenda
+        </button>
+        <button class="nav-tab" onclick="mudarAba('historico', this)">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Histórico
+        </button>
       </div>
-    </div>
-
-    <div id="fila-offline-box" class="queue-banner hidden">
-      <button onclick="processarFilaOffline()" class="queue-btn">
-        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span><strong id="fila-count">0</strong> atualização(ões) na fila — Toque para sincronizar</span>
-      </button>
-    </div>
-
-    <main id="tab-agenda" class="feed-container">
-      <div id="lista-obras-agenda"></div>
-      <footer class="flownest-footer" style="margin-top: 20px;">
-        TNSolar • Desenvolvido by <strong>FlowNest</strong>
-      </footer>
-    </main>
-
-    <main id="tab-historico" class="feed-container hidden">
-      <h3 class="group-heading">
-        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Concluídas neste mês
-      </h3>
-      <div id="lista-obras-historico"></div>
-      <footer class="flownest-footer" style="margin-top: 20px;">
-        TNSolar • Desenvolvido by <strong>FlowNest</strong>
-      </footer>
-    </main>
-
-    <nav class="floating-nav">
-      <button class="nav-tab active" onclick="mudarAba('agenda', this)">
-        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Minha Agenda
-      </button>
-      <button class="nav-tab" onclick="mudarAba('historico', this)">
-        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Histórico
-      </button>
     </nav>
   </section>
 
@@ -1221,7 +1226,7 @@
       </span>
     </header>
 
-    <main class="detail-body">
+    <main class="detail-body content-enter">
       <div id="box-alerta" class="alert-hero hidden">
         <div class="alert-hero-icon">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -1315,25 +1320,25 @@
       </footer>
     </main>
 
-    <!-- DOCK DE COMANDOS PREMIUM -->
-    <footer class="command-dock">
+    <!-- DOCK DE COMANDOS FIXO NA BASE -->
+    <footer id="dock-comandos" class="command-dock">
       <div class="command-grid">
-        <button onclick="dispararStatus('A Caminho')" class="cmd-btn cmd-transit">
+        <button id="btn-cmd-transit" onclick="dispararStatus('A Caminho')" class="cmd-btn cmd-transit">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           A Caminho
         </button>
 
-        <button onclick="dispararStatus('Em Andamento')" class="cmd-btn cmd-start">
+        <button id="btn-cmd-start" onclick="dispararStatus('Em Andamento')" class="cmd-btn cmd-start">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Iniciar Obra
         </button>
 
-        <button onclick="abrirModalProblema()" class="cmd-btn cmd-issue">
+        <button id="btn-cmd-issue" onclick="abrirModalProblema()" class="cmd-btn cmd-issue span-full">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           Problema
         </button>
 
-        <button onclick="confirmarFinalizacao()" class="cmd-btn cmd-finish">
+        <button id="btn-cmd-finish" onclick="confirmarFinalizacao()" class="cmd-btn cmd-finish hidden">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           Finalizar
         </button>
@@ -1391,16 +1396,19 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxpzR3WZ5OKj1oLmCc1UDGuWg7aDRyTVc0Q9GRzMDywtqwHJF0Sbp_oiIu-6n_Up-myrQ/exec";
 
+    // LOCALSTORAGE APENAS PARA O LOGIN DO COLABORADOR
     const KEY_USER = "tnsolar_colab_user";
-    const KEY_CACHE_OBRAS = "tnsolar_colab_obras";
-    const KEY_OFFLINE_QUEUE = "tnsolar_colab_queue";
 
     let usuario = null;
     let minhasObras = [];
     let obraAtual = null;
     let motivoSelecionado = "";
+    let checklistEstadoMemoria = {};
+    let intervaloAutoSync = null;
+    let sincronizandoAgora = false;
 
     document.addEventListener("DOMContentLoaded", () => {
+      limparStoragesAntigos();
       registrarServiceWorker();
       configurarMonitorRede();
 
@@ -1413,10 +1421,28 @@
 
       const savedUser = localStorage.getItem(KEY_USER);
       if (savedUser) {
-        usuario = JSON.parse(savedUser);
-        entrarNaAgenda();
+        try {
+          usuario = JSON.parse(savedUser);
+          if (usuario && usuario.id) {
+            entrarNaAgenda();
+          } else {
+            localStorage.removeItem(KEY_USER);
+          }
+        } catch (e) {
+          localStorage.removeItem(KEY_USER);
+        }
       }
     });
+
+    function limparStoragesAntigos() {
+      try {
+        Object.keys(localStorage).forEach((chave) => {
+          if (chave !== KEY_USER) {
+            localStorage.removeItem(chave);
+          }
+        });
+      } catch (e) {}
+    }
 
     function registrarServiceWorker() {
       if ("serviceWorker" in navigator) {
@@ -1429,7 +1455,7 @@
         const banner = document.getElementById("offline-banner");
         if (navigator.onLine) {
           banner.classList.add("hidden");
-          processarFilaOffline();
+          if (usuario) sincronizarDados(false);
         } else {
           banner.classList.remove("hidden");
         }
@@ -1440,7 +1466,32 @@
     }
 
     // =========================================================
-    // LOGIN
+    // ATUALIZAÇÃO AUTOMÁTICA A CADA 20 SEGUNDOS
+    // =========================================================
+    function iniciarAutoAtualizacao() {
+      pararAutoAtualizacao();
+      intervaloAutoSync = setInterval(() => {
+        if (usuario && navigator.onLine && !document.hidden) {
+          sincronizarDados(false);
+        }
+      }, 20000);
+    }
+
+    function pararAutoAtualizacao() {
+      if (intervaloAutoSync) {
+        clearInterval(intervaloAutoSync);
+        intervaloAutoSync = null;
+      }
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && usuario && navigator.onLine) {
+        sincronizarDados(false);
+      }
+    });
+
+    // =========================================================
+    // LOGIN (ÚNICO ITEM SALVO NO LOCALSTORAGE)
     // =========================================================
     document.getElementById("form-login").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -1487,54 +1538,62 @@
     function entrarNaAgenda() {
       document.getElementById("colab-nome").textContent = `Olá, ${usuario.nome.split(" ")[0]}`;
       trocarTela("view-home");
-      carregarCacheLocal();
+      renderizarListas();
       sincronizarDados(false);
+      iniciarAutoAtualizacao();
     }
 
     function confirmarLogout() {
       if (confirm("Deseja sair da sua conta?")) {
+        pararAutoAtualizacao();
         localStorage.removeItem(KEY_USER);
         usuario = null;
+        minhasObras = [];
+        obraAtual = null;
+        checklistEstadoMemoria = {};
         trocarTela("view-login");
       }
     }
 
     // =========================================================
-    // SINCRONIZAÇÃO DE DADOS
+    // SINCRONIZAÇÃO DE DADOS EM TEMPO REAL
     // =========================================================
-    function carregarCacheLocal() {
-      const cache = localStorage.getItem(KEY_CACHE_OBRAS);
-      if (cache) {
-        minhasObras = JSON.parse(cache);
-        renderizarListas();
-      }
-      atualizarBadgeFila();
-    }
-
     async function sincronizarDados(exibirFeedback = true) {
+      if (!usuario) return;
       if (!navigator.onLine) {
-        if (exibirFeedback) mostrarToast("Modo offline: exibindo dados salvos");
+        if (exibirFeedback) mostrarToast("Sem internet no momento.");
         return;
       }
+      if (sincronizandoAgora && !exibirFeedback) return;
 
+      sincronizandoAgora = true;
       if (exibirFeedback) mostrarLoader(true, "Atualizando agenda...");
 
       try {
-        await processarFilaOffline();
-        const url = `${API_URL}?action=getDados&perfil=Colaborador&userId=${encodeURIComponent(usuario.id)}`;
+        const url = `${API_URL}?action=getDados&perfil=Colaborador&userId=${encodeURIComponent(usuario.id)}&_t=${Date.now()}`;
         const response = await fetch(url);
         const data = await response.json();
 
         if (data.status === "success") {
           minhasObras = data.obras || [];
-          localStorage.setItem(KEY_CACHE_OBRAS, JSON.stringify(minhasObras));
           renderizarListas();
-          if (exibirFeedback) mostrarToast("Agenda sincronizada!");
+
+          // Se o colaborador estiver com uma obra aberta, atualiza os dados dela sem resetar a tela
+          if (obraAtual && !document.getElementById("view-detalhes").classList.contains("hidden")) {
+            const atualizada = minhasObras.find(o => String(o.id) === String(obraAtual.id));
+            if (atualizada) {
+              obraAtual = atualizada;
+              atualizarCabecalhoEControlesObra(obraAtual);
+            }
+          }
+
+          if (exibirFeedback) mostrarToast("Agenda atualizada!");
         }
       } catch (err) {
-        if (exibirFeedback) mostrarToast("Usando agenda salva no aparelho");
+        if (exibirFeedback) mostrarToast("Erro ao atualizar agenda.");
       } finally {
-        mostrarLoader(false);
+        sincronizandoAgora = false;
+        if (exibirFeedback) mostrarLoader(false);
       }
     }
 
@@ -1597,7 +1656,7 @@
             </div>
             <strong style="font-size: 16px;">Nenhuma instalação pendente</strong>
             <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 5px;">
-              Toque em atualizar no topo para buscar novas escalas.
+              A agenda atualiza automaticamente a cada 20 segundos.
             </p>
           </div>
         `;
@@ -1657,7 +1716,7 @@
     }
 
     // =========================================================
-    // DETALHES DA OBRA
+    // DETALHES DA OBRA & CONTROLE CONDICIONAL DOS BOTÕES
     // =========================================================
     function abrirObra(idObra) {
       obraAtual = minhasObras.find(o => String(o.id) === String(idObra));
@@ -1667,10 +1726,6 @@
       document.getElementById("det-data").textContent = obraAtual.dataAgendada
         ? obraAtual.dataAgendada.split("-").reverse().join("/")
         : "--/--/----";
-
-      const badge = document.getElementById("det-status");
-      badge.innerHTML = `<span class="status-dot"></span><span>${obraAtual.status}</span>`;
-      badge.className = "status-badge st-" + (obraAtual.status || "Agendada").replace(/\s+/g, "");
 
       const boxAlerta = document.getElementById("box-alerta");
       if (obraAtual.alertasAcesso) {
@@ -1695,13 +1750,38 @@
       document.getElementById("det-local-inv").textContent = obraAtual.localInversor || "-";
       document.getElementById("det-local-pad").textContent = obraAtual.localPadrao || "-";
 
-      document.getElementById("det-hora-ini").textContent = obraAtual.horaInicio || "--:--";
-      document.getElementById("det-hora-fim").textContent = obraAtual.horaFim || "--:--";
-
+      atualizarCabecalhoEControlesObra(obraAtual);
       montarChecklist(obraAtual);
 
       trocarTela("view-detalhes");
       window.scrollTo(0, 0);
+    }
+
+    function atualizarCabecalhoEControlesObra(obra) {
+      const badge = document.getElementById("det-status");
+      badge.innerHTML = `<span class="status-dot"></span><span>${obra.status}</span>`;
+      badge.className = "status-badge st-" + (obra.status || "Agendada").replace(/\s+/g, "");
+
+      document.getElementById("det-hora-ini").textContent = obra.horaInicio || "--:--";
+      document.getElementById("det-hora-fim").textContent = obra.horaFim || "--:--";
+
+      atualizarBotoesAcaoObra(obra.status);
+    }
+
+    function atualizarBotoesAcaoObra(status) {
+      const btnIssue = document.getElementById("btn-cmd-issue");
+      const btnFinish = document.getElementById("btn-cmd-finish");
+
+      // Só exibe "Finalizar" quando a obra já foi iniciada ("Em Andamento")
+      const obraIniciada = status === "Em Andamento";
+
+      if (obraIniciada) {
+        btnFinish.classList.remove("hidden");
+        btnIssue.classList.remove("span-full");
+      } else {
+        btnFinish.classList.add("hidden");
+        btnIssue.classList.add("span-full");
+      }
     }
 
     function montarChecklist(obra) {
@@ -1717,8 +1797,10 @@
         return;
       }
 
-      const chaveStorage = `tnsolar_chk_${obra.id}`;
-      const estadoSalvo = JSON.parse(localStorage.getItem(chaveStorage) || "{}");
+      if (!checklistEstadoMemoria[obra.id]) {
+        checklistEstadoMemoria[obra.id] = {};
+      }
+      const estadoSalvo = checklistEstadoMemoria[obra.id];
 
       container.innerHTML = itens.map((texto, index) => {
         const marcado = !!estadoSalvo[index];
@@ -1738,13 +1820,13 @@
 
     function alternarChecklist(idObra, idx, total, inputEl) {
       vibrarCelular(25);
-      const chaveStorage = `tnsolar_chk_${idObra}`;
-      const estadoSalvo = JSON.parse(localStorage.getItem(chaveStorage) || "{}");
-      estadoSalvo[idx] = inputEl.checked;
-      localStorage.setItem(chaveStorage, JSON.stringify(estadoSalvo));
+      if (!checklistEstadoMemoria[idObra]) {
+        checklistEstadoMemoria[idObra] = {};
+      }
+      checklistEstadoMemoria[idObra][idx] = inputEl.checked;
 
       inputEl.parentElement.classList.toggle("done", inputEl.checked);
-      atualizarProgressoChecklist(estadoSalvo, total);
+      atualizarProgressoChecklist(checklistEstadoMemoria[idObra], total);
     }
 
     function atualizarProgressoChecklist(estadoSalvo, total) {
@@ -1763,17 +1845,25 @@
 
     async function dispararStatus(novoStatus, motivoProblema = "") {
       if (!obraAtual) return;
+
+      if (!navigator.onLine) {
+        mostrarToast("Sem internet para atualizar o status.");
+        return;
+      }
+
       vibrarCelular(50);
 
       const agoraHora = new Date().toTimeString().slice(0, 5);
+      const statusAnterior = obraAtual.status;
+      const horaIniAnterior = obraAtual.horaInicio;
+      const horaFimAnterior = obraAtual.horaFim;
 
       obraAtual.status = novoStatus;
       if (novoStatus === "Em Andamento" && !obraAtual.horaInicio) obraAtual.horaInicio = agoraHora;
       if (novoStatus === "Concluida") obraAtual.horaFim = agoraHora;
       if (motivoProblema) obraAtual.motivoProblema = motivoProblema;
 
-      localStorage.setItem(KEY_CACHE_OBRAS, JSON.stringify(minhasObras));
-      abrirObra(obraAtual.id);
+      atualizarCabecalhoEControlesObra(obraAtual);
 
       const payload = {
         action: "atualizarStatusObra",
@@ -1782,12 +1872,6 @@
         motivoProblema,
         usuarioNome: usuario.nome
       };
-
-      if (!navigator.onLine) {
-        adicionarNaFilaOffline(payload);
-        mostrarToast("Salvo offline! Enviará ao reconectar.");
-        return;
-      }
 
       mostrarLoader(true, "Atualizando OS...");
       try {
@@ -1799,12 +1883,20 @@
         const data = await res.json();
         if (data.status === "success") {
           mostrarToast(`Status "${novoStatus}" registrado!`);
+          sincronizarDados(false);
         } else {
-          adicionarNaFilaOffline(payload);
+          obraAtual.status = statusAnterior;
+          obraAtual.horaInicio = horaIniAnterior;
+          obraAtual.horaFim = horaFimAnterior;
+          atualizarCabecalhoEControlesObra(obraAtual);
+          mostrarToast("Não foi possível atualizar. Tente novamente.");
         }
       } catch (err) {
-        adicionarNaFilaOffline(payload);
-        mostrarToast("Sinal fraco: salvo na fila.");
+        obraAtual.status = statusAnterior;
+        obraAtual.horaInicio = horaIniAnterior;
+        obraAtual.horaFim = horaFimAnterior;
+        atualizarCabecalhoEControlesObra(obraAtual);
+        mostrarToast("Falha de rede. Tente novamente.");
       } finally {
         mostrarLoader(false);
       }
@@ -1845,59 +1937,10 @@
     }
 
     // =========================================================
-    // FILA OFFLINE
-    // =========================================================
-    function adicionarNaFilaOffline(payload) {
-      const fila = JSON.parse(localStorage.getItem(KEY_OFFLINE_QUEUE) || "[]");
-      fila.push(payload);
-      localStorage.setItem(KEY_OFFLINE_QUEUE, JSON.stringify(fila));
-      atualizarBadgeFila();
-    }
-
-    async function processarFilaOffline() {
-      const fila = JSON.parse(localStorage.getItem(KEY_OFFLINE_QUEUE) || "[]");
-      if (!fila.length || !navigator.onLine) {
-        atualizarBadgeFila();
-        return;
-      }
-
-      const pendentes = [];
-      for (const item of fila) {
-        try {
-          const res = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify(item)
-          });
-          const data = await res.json();
-          if (data.status !== "success") pendentes.push(item);
-        } catch (e) {
-          pendentes.push(item);
-        }
-      }
-
-      localStorage.setItem(KEY_OFFLINE_QUEUE, JSON.stringify(pendentes));
-      atualizarBadgeFila();
-      if (pendentes.length === 0) {
-        mostrarToast("Pendências offline sincronizadas!");
-      }
-    }
-
-    function atualizarBadgeFila() {
-      const fila = JSON.parse(localStorage.getItem(KEY_OFFLINE_QUEUE) || "[]");
-      const box = document.getElementById("fila-offline-box");
-      if (fila.length > 0) {
-        document.getElementById("fila-count").textContent = fila.length;
-        box.classList.remove("hidden");
-      } else {
-        box.classList.add("hidden");
-      }
-    }
-
-    // =========================================================
     // NAVEGAÇÃO & UTILITÁRIOS
     // =========================================================
     function voltarParaAgenda() {
+      obraAtual = null;
       trocarTela("view-home");
       renderizarListas();
     }
