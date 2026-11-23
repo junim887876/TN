@@ -5,28 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0B132B">
+  <meta name="theme-color" content="#050811">
   <title>TNSolar Campo</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="logotn.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-deep: #070D19;
-      --bg-mid: #0F1E36;
-      --glass-surface: rgba(255, 255, 255, 0.08);
-      --glass-surface-strong: rgba(20, 32, 54, 0.78);
-      --glass-border: rgba(255, 255, 255, 0.16);
-      --glass-highlight: rgba(255, 255, 255, 0.25);
+      --bg-void: #050811;
+      --bg-elevated: #0B1120;
+      --surface-card: rgba(15, 23, 42, 0.62);
+      --surface-card-hover: rgba(22, 33, 58, 0.78);
+      --surface-glass: rgba(10, 15, 30, 0.78);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-light: rgba(255, 255, 255, 0.16);
 
       --solar: #F59E0B;
-      --solar-glow: rgba(245, 158, 11, 0.35);
+      --solar-light: #FBBF24;
+      --solar-glow: rgba(245, 158, 11, 0.28);
       --cyan: #38BDF8;
-      --green: #10B981;
-      --amber: #F59E0B;
-      --red: #EF4444;
+      --cyan-glow: rgba(56, 189, 248, 0.25);
+      --emerald: #10B981;
+      --emerald-glow: rgba(16, 185, 129, 0.28);
+      --rose: #F43F5E;
+      --rose-glow: rgba(244, 63, 94, 0.25);
 
       --text-primary: #F8FAFC;
       --text-secondary: #94A3B8;
+      --text-muted: #64748B;
 
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -36,58 +44,116 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
       width: 100%;
       min-height: 100dvh;
-      background-color: var(--bg-deep);
-      background-image:
-        radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.18) 0%, transparent 42%),
-        radial-gradient(circle at 85% 25%, rgba(245, 158, 11, 0.16) 0%, transparent 45%),
-        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
-        linear-gradient(180deg, #070D19 0%, #0D192E 100%);
-      background-attachment: fixed;
+      background-color: var(--bg-void);
       color: var(--text-primary);
       font-size: 15px;
-      line-height: 1.4;
+      line-height: 1.45;
       overflow-x: hidden;
       overscroll-behavior-y: contain;
     }
 
-    .hidden { display: none !important; }
-
-    /* ==========================================
-       COMPONENTES APPLE GLASS BASE
-       ========================================== */
-    .glass-panel {
-      background: var(--glass-surface);
-      backdrop-filter: blur(22px) saturate(180%);
-      -webkit-backdrop-filter: blur(22px) saturate(180%);
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32), inset 0 1px 0 var(--glass-highlight);
+    /* AURORA AMBIENT BACKGROUND */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 0%, #0F172A 0%, #050811 100%);
+    }
+    .ambient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.45;
+      animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+    .orb-1 {
+      width: 340px;
+      height: 340px;
+      background: rgba(245, 158, 11, 0.22);
+      top: -80px;
+      right: -60px;
+    }
+    .orb-2 {
+      width: 380px;
+      height: 380px;
+      background: rgba(56, 189, 248, 0.16);
+      bottom: 10%;
+      left: -120px;
+      animation-delay: -6s;
+    }
+    .orb-3 {
+      width: 260px;
+      height: 260px;
+      background: rgba(16, 185, 129, 0.14);
+      top: 45%;
+      right: -80px;
+      animation-delay: -12s;
+    }
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-25px, 35px) scale(1.12); }
     }
 
-    /* BANNER OFFLINE & TOAST */
+    .hidden { display: none !important; }
+
+    /* ANIMAÇÃO DE TRANSIÇÃO DE TELA */
+    .view-animate {
+      animation: viewEnter 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes viewEnter {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* SUPERFÍCIE GLASS PREMIUM */
+    .glass-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    /* ÍCONES SVG INLINE */
+    .ico {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+      flex-shrink: 0;
+    }
+    .ico-sm { width: 15px; height: 15px; stroke-width: 2.3; flex-shrink: 0; }
+    .ico-lg { width: 22px; height: 22px; stroke-width: 2; flex-shrink: 0; }
+
+    /* OFFLINE PILL & TOAST */
     .offline-pill {
       position: fixed;
-      top: calc(10px + var(--safe-top));
+      top: calc(12px + var(--safe-top));
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(239, 68, 68, 0.88);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(225, 29, 72, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.25);
       color: #fff;
       font-size: 12px;
       font-weight: 700;
-      padding: 6px 14px;
+      padding: 7px 16px;
       border-radius: 99px;
       z-index: 1500;
+      display: flex;
+      align-items: center;
+      gap: 7px;
       white-space: nowrap;
-      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+      box-shadow: 0 8px 24px rgba(225, 29, 72, 0.45);
     }
 
     .toast {
@@ -95,54 +161,56 @@
       top: calc(16px + var(--safe-top));
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-light);
       color: #fff;
-      padding: 11px 18px;
+      padding: 12px 20px;
       border-radius: 99px;
       font-size: 13px;
       font-weight: 600;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.15);
       z-index: 2500;
       white-space: nowrap;
-      max-width: 90vw;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      animation: fadeDrop 0.25s ease-out;
+      max-width: 92vw;
+      animation: toastPop 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    @keyframes fadeDrop {
-      from { opacity: 0; transform: translate(-50%, -10px); }
-      to { opacity: 1; transform: translate(-50%, 0); }
+    @keyframes toastPop {
+      from { opacity: 0; transform: translate(-50%, -14px) scale(0.94); }
+      to { opacity: 1; transform: translate(-50%, 0) scale(1); }
     }
 
     /* LOADER */
     .loader-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(7, 13, 25, 0.72);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(5, 8, 17, 0.76);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 3000;
-      gap: 14px;
+      gap: 16px;
     }
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(255, 255, 255, 0.15);
-      border-top-color: var(--solar);
+    .spinner-ring {
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
-      animation: spin 0.75s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+      border: 3px solid rgba(255, 255, 255, 0.08);
+      border-top-color: var(--solar);
+      border-right-color: var(--cyan);
+      animation: spin 0.7s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ==========================================
-       1. TELA DE LOGIN (CABE 100% NA TELA)
+       1. TELA DE LOGIN
        ========================================== */
     #view-login {
       min-height: 100dvh;
@@ -150,392 +218,454 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      padding: calc(20px + var(--safe-top)) 18px calc(16px + var(--safe-bottom));
+      padding: calc(24px + var(--safe-top)) 20px calc(20px + var(--safe-bottom));
     }
 
-    .login-container {
+    .login-box {
       width: 100%;
-      max-width: 390px;
+      max-width: 400px;
       margin: auto 0;
-      border-radius: 28px;
-      padding: 28px 22px;
+      border-radius: 32px;
+      padding: 34px 26px 30px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-box::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.7), transparent);
     }
 
-    .logo-ring {
-      width: 82px;
-      height: 82px;
-      margin: 0 auto 14px;
-      border-radius: 22px;
+    .brand-emblem {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 18px;
+      border-radius: 26px;
       padding: 3px;
-      background: linear-gradient(135deg, var(--solar), var(--cyan));
-      box-shadow: 0 8px 24px var(--solar-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: linear-gradient(135deg, var(--solar-light), var(--solar), var(--cyan));
+      box-shadow: 0 12px 32px var(--solar-glow);
+      position: relative;
     }
-    .logo-ring img {
+    .brand-emblem img {
       width: 100%;
       height: 100%;
-      border-radius: 19px;
+      border-radius: 23px;
       object-fit: cover;
-      background: #0F172A;
+      background: #0B1120;
     }
 
-    .company-pill {
+    .badge-tag {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(245, 158, 11, 0.16);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      color: #FCD34D;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--solar-light);
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 1px;
-      padding: 4px 12px;
+      letter-spacing: 1.2px;
+      padding: 5px 14px;
       border-radius: 99px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
-    .login-container h1 {
-      font-size: 24px;
+    .login-box h1 {
+      font-size: 26px;
       font-weight: 800;
-      letter-spacing: -0.4px;
+      letter-spacing: -0.6px;
       color: #FFFFFF;
     }
     .login-sub {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-secondary);
-      margin: 4px 0 22px;
+      margin: 6px 0 26px;
     }
 
-    .field-group {
+    .input-wrap {
       text-align: left;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    .field-group label {
+    .input-wrap label {
       display: block;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-secondary);
-      margin-bottom: 6px;
+      margin-bottom: 7px;
       padding-left: 4px;
     }
 
-    .glass-input {
+    .modern-input {
       width: 100%;
-      padding: 14px 16px;
+      padding: 15px 16px;
       border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid var(--border-light);
+      background: rgba(5, 8, 17, 0.65);
       color: #FFFFFF;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: all 0.22s ease;
     }
-    .glass-input::placeholder {
-      color: rgba(148, 163, 184, 0.55);
-    }
-    .glass-input:focus {
+    .modern-input::placeholder { color: var(--text-muted); }
+    .modern-input:focus {
       outline: none;
       border-color: var(--solar);
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+      background: rgba(11, 17, 32, 0.9);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18);
     }
     #login-pin {
       text-align: center;
-      letter-spacing: 10px;
+      letter-spacing: 12px;
       font-size: 22px;
+      font-weight: 800;
     }
 
-    .btn-solar-glass {
+    .btn-primary-solar {
       width: 100%;
       padding: 16px;
-      margin-top: 6px;
+      margin-top: 8px;
       border: none;
       border-radius: 16px;
-      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-      color: #0B1120;
+      background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 50%, #D97706 100%);
+      color: #050811;
       font-size: 15px;
       font-weight: 800;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
-      transition: transform 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 10px 28px rgba(245, 158, 11, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
     }
-    .btn-solar-glass:active { transform: scale(0.97); }
+    .btn-primary-solar:active { transform: scale(0.97); }
 
     .error-msg {
-      color: #FCA5A5;
+      color: #FDA4AF;
       font-size: 13px;
       font-weight: 600;
-      margin-top: 12px;
+      margin-top: 14px;
       min-height: 18px;
     }
 
-    /* RODAPÉ FLOWNEST */
     .flownest-footer {
       text-align: center;
       font-size: 11px;
-      color: rgba(148, 163, 184, 0.7);
+      color: var(--text-muted);
       letter-spacing: 0.4px;
       padding: 12px 0 4px;
       width: 100%;
     }
-    .flownest-footer strong {
-      color: #E2E8F0;
-      font-weight: 700;
-    }
+    .flownest-footer strong { color: var(--text-secondary); font-weight: 700; }
 
     /* ==========================================
-       2. HEADER GLASS & RESUMO
+       2. HEADER & DASHBOARD DE MÉTRICAS
        ========================================== */
-    .glass-header {
+    .top-bar {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(11, 19, 43, 0.75);
+      background: rgba(5, 8, 17, 0.78);
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-bottom: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--border-subtle);
       padding: calc(12px + var(--safe-top)) 16px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .brand-mini {
+    .user-profile {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 11px;
     }
-    .brand-mini img {
-      width: 38px;
-      height: 38px;
-      border-radius: 11px;
+    .user-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
       object-fit: cover;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(245, 158, 11, 0.4);
     }
-    .brand-mini span {
+    .user-profile span {
       display: block;
       font-size: 10px;
       font-weight: 800;
-      color: var(--solar);
-      letter-spacing: 0.8px;
+      color: var(--solar-light);
+      letter-spacing: 1px;
       text-transform: uppercase;
     }
-    .brand-mini h2 {
+    .user-profile h2 {
       font-size: 17px;
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: -0.3px;
       color: #FFFFFF;
     }
 
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
-    .glass-icon-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.09);
-      border: 1px solid var(--glass-border);
-      color: #FFFFFF;
-      font-size: 16px;
+    .icon-actions { display: flex; gap: 8px; }
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      transition: all 0.15s ease;
     }
-    .glass-icon-btn:active { background: rgba(255, 255, 255, 0.2); }
+    .icon-btn:active {
+      background: rgba(255, 255, 255, 0.14);
+      transform: scale(0.94);
+    }
 
-    /* MÉTRICAS RÁPIDAS */
-    .metrics-strip {
+    /* MÉTRICAS */
+    .kpi-grid {
       max-width: 540px;
-      margin: 12px auto 4px;
-      padding: 0 14px;
+      margin: 14px auto 4px;
+      padding: 0 16px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
     }
-    .metric-card {
-      border-radius: 18px;
-      padding: 12px 14px;
+    .kpi-box {
+      border-radius: 20px;
+      padding: 14px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .metric-card span {
+    .kpi-info span {
+      display: block;
       font-size: 12px;
       color: var(--text-secondary);
       font-weight: 600;
     }
-    .metric-card strong {
-      font-size: 20px;
+    .kpi-info strong {
+      font-size: 24px;
       font-weight: 800;
+      letter-spacing: -0.5px;
       color: #FFFFFF;
     }
+    .kpi-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .kpi-solar { background: rgba(245, 158, 11, 0.15); color: var(--solar-light); }
+    .kpi-green { background: rgba(16, 185, 129, 0.15); color: #34D399; }
 
     .queue-banner {
       max-width: 540px;
-      margin: 8px auto 0;
-      padding: 0 14px;
+      margin: 10px auto 0;
+      padding: 0 16px;
     }
     .queue-btn {
       width: 100%;
-      background: rgba(245, 158, 11, 0.18);
-      border: 1px solid rgba(245, 158, 11, 0.45);
-      color: #FCD34D;
-      padding: 8px 12px;
-      border-radius: 12px;
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #FDE68A;
+      padding: 10px 14px;
+      border-radius: 14px;
       font-size: 12px;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       cursor: pointer;
     }
 
     /* ==========================================
-       3. AGENDA & CARDS DE OBRA
+       3. CARDS DE OBRA (AGENDA)
        ========================================== */
-    .main-scroll {
+    .feed-container {
       max-width: 540px;
       margin: 0 auto;
-      padding: 10px 14px calc(92px + var(--safe-bottom));
+      padding: 8px 16px calc(98px + var(--safe-bottom));
     }
 
-    .section-label {
+    .group-heading {
+      display: flex;
+      align-items: center;
+      gap: 7px;
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--text-secondary);
-      margin: 14px 4px 8px;
+      margin: 18px 4px 10px;
     }
 
-    .obra-card {
-      border-radius: 22px;
-      padding: 16px;
-      margin-bottom: 12px;
-      transition: transform 0.15s ease;
+    .job-card {
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s;
+      position: relative;
+      overflow: hidden;
     }
-    .obra-card:active { transform: scale(0.985); }
-    .obra-card.today-glow {
-      border-color: rgba(245, 158, 11, 0.45);
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(245, 158, 11, 0.2);
+    .job-card:active { transform: scale(0.985); }
+    .job-card.is-today {
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(245, 158, 11, 0.18);
     }
 
-    .card-top {
+    .job-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .status-pill {
-      padding: 4px 10px;
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
       border-radius: 99px;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
     }
-    .st-Agendada { background: rgba(148, 163, 184, 0.2); color: #CBD5E1; border: 1px solid rgba(148, 163, 184, 0.3); }
-    .st-ACaminho { background: rgba(56, 189, 248, 0.2); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.35); }
-    .st-EmAndamento { background: rgba(245, 158, 11, 0.22); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.4); }
-    .st-ComProblema { background: rgba(239, 68, 68, 0.22); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.4); }
-    .st-Concluida { background: rgba(16, 185, 129, 0.22); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .st-Agendada { background: rgba(148, 163, 184, 0.16); color: #CBD5E1; border: 1px solid rgba(148, 163, 184, 0.25); }
+    .st-ACaminho { background: rgba(56, 189, 248, 0.16); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.32); }
+    .st-EmAndamento { background: rgba(245, 158, 11, 0.18); color: #FCD34D; border: 1px solid rgba(245, 158, 11, 0.38); }
+    .st-ComProblema { background: rgba(244, 63, 94, 0.18); color: #FDA4AF; border: 1px solid rgba(244, 63, 94, 0.38); }
+    .st-Concluida { background: rgba(16, 185, 129, 0.18); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.38); }
 
-    .date-tag {
+    .date-label {
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-secondary);
     }
 
-    .client-title {
+    .client-name {
       font-size: 18px;
       font-weight: 800;
+      letter-spacing: -0.3px;
       color: #FFFFFF;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
-    .address-sub {
+    .address-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
       font-size: 13px;
       color: var(--text-secondary);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
+    .address-line svg { margin-top: 2px; color: var(--cyan); }
 
-    .specs-chip {
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.09);
+    .tech-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(5, 8, 17, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 9px 12px;
+      border-radius: 13px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #E2E8F0;
+      margin-bottom: 12px;
+    }
+    .tech-pill svg { color: var(--solar-light); }
+
+    .warning-banner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #FDE68A;
       padding: 8px 12px;
       border-radius: 12px;
       font-size: 12px;
-      font-weight: 600;
-      color: #E2E8F0;
-      margin-bottom: 10px;
-    }
-
-    .alert-strip {
-      background: rgba(245, 158, 11, 0.16);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      color: #FDE68A;
-      padding: 7px 10px;
-      border-radius: 10px;
-      font-size: 12px;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
-    .card-btns {
+    /* BOTÕES DO CARD */
+    .card-actions {
       display: grid;
-      grid-template-columns: 1fr 1.35fr;
-      gap: 8px;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
     }
-    .btn-glass-route {
-      background: rgba(56, 189, 248, 0.2);
-      border: 1px solid rgba(56, 189, 248, 0.4);
+    .btn-card-route {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(2, 132, 199, 0.25));
+      border: 1px solid rgba(56, 189, 248, 0.38);
       color: #7DD3FC;
       text-decoration: none;
-      padding: 11px;
-      border-radius: 13px;
+      padding: 12px;
+      border-radius: 14px;
       font-size: 13px;
       font-weight: 700;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform 0.15s;
     }
-    .btn-glass-open {
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: #FFFFFF;
-      padding: 11px;
-      border-radius: 13px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+    .btn-card-route:active { transform: scale(0.96); }
 
-    /* ==========================================
-       TAB BAR FLUTUANTE ESTILO IOS
-       ========================================== */
-    .ios-tabbar {
+    .btn-card-open {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #FFFFFF;
+      padding: 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .btn-card-open:active { transform: scale(0.96); }
+
+    /* TAB BAR FLUTUANTE */
+    .floating-nav {
       position: fixed;
-      bottom: calc(12px + var(--safe-bottom));
+      bottom: calc(14px + var(--safe-bottom));
       left: 50%;
       transform: translateX(-50%);
       width: calc(100% - 32px);
-      max-width: 360px;
-      background: rgba(15, 23, 42, 0.82);
+      max-width: 350px;
+      background: rgba(11, 17, 32, 0.85);
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border: 1px solid var(--glass-border);
+      border: 1px solid var(--border-light);
       border-radius: 99px;
       padding: 5px;
       display: flex;
       gap: 4px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
       z-index: 150;
     }
-    .tab-pill {
+    .nav-tab {
       flex: 1;
       background: transparent;
       border: none;
-      padding: 10px 12px;
+      padding: 11px 12px;
       border-radius: 99px;
       color: var(--text-secondary);
       font-size: 13px;
@@ -543,12 +673,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 7px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.22s ease;
     }
-    .tab-pill.active {
-      background: rgba(255, 255, 255, 0.16);
+    .nav-tab.active {
+      background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08));
       color: #FFFFFF;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
     }
@@ -556,295 +686,390 @@
     /* ==========================================
        4. TELA DE DETALHES DA OBRA
        ========================================== */
-    .back-pill {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid var(--glass-border);
+    .btn-back {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
       color: #FFFFFF;
-      padding: 8px 12px;
+      padding: 8px 13px;
       border-radius: 12px;
       font-size: 13px;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       cursor: pointer;
     }
+    .btn-back:active { transform: scale(0.95); }
 
-    .detail-scroll {
+    .detail-body {
       max-width: 540px;
       margin: 0 auto;
-      padding: 12px 14px calc(155px + var(--safe-bottom));
+      padding: 14px 16px calc(165px + var(--safe-bottom));
     }
 
-    .critical-glass-alert {
-      background: rgba(245, 158, 11, 0.2);
-      border: 1px solid rgba(245, 158, 11, 0.55);
-      border-radius: 18px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
+    .alert-hero {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14));
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
     }
-    .critical-glass-alert strong {
+    .alert-hero-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(245, 158, 11, 0.25);
+      color: var(--solar-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .alert-hero strong {
       display: block;
       font-size: 11px;
-      color: #FCD34D;
-      letter-spacing: 0.6px;
+      color: var(--solar-light);
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
       margin-bottom: 2px;
     }
-    .critical-glass-alert p {
-      font-size: 14px;
-      font-weight: 700;
-      color: #FEF3C7;
-    }
+    .alert-hero p { font-size: 13.5px; font-weight: 700; color: #FEF3C7; }
 
-    .detail-card {
-      border-radius: 22px;
-      padding: 16px;
-      margin-bottom: 12px;
+    .section-card {
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 14px;
     }
-    .micro-title {
+    .section-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 11px;
       font-weight: 800;
-      color: var(--solar);
-      letter-spacing: 0.8px;
+      color: var(--solar-light);
+      letter-spacing: 0.9px;
       text-transform: uppercase;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
-    .contact-row {
+    /* BOTÕES ROTA / WHATSAPP / LIGAR PREMIUM */
+    .quick-contact-grid {
       display: grid;
-      grid-template-columns: 1.2fr 1fr 0.9fr;
-      gap: 8px;
-      margin-top: 12px;
+      grid-template-columns: 1fr 1.15fr 0.95fr;
+      gap: 9px;
+      margin-top: 14px;
     }
-    .action-chip {
-      padding: 11px 6px;
-      border-radius: 13px;
+    .contact-pill {
+      padding: 12px 8px;
+      border-radius: 15px;
       font-size: 13px;
       font-weight: 700;
-      text-align: center;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 6px;
+      transition: transform 0.15s ease, filter 0.2s;
     }
-    .chip-maps { background: rgba(56, 189, 248, 0.22); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.4); }
-    .chip-whats { background: rgba(16, 185, 129, 0.22); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
-    .chip-call { background: rgba(255, 255, 255, 0.12); color: #F8FAFC; border: 1px solid var(--glass-border); }
+    .contact-pill:active { transform: scale(0.95); }
 
-    .string-banner {
-      background: rgba(245, 158, 11, 0.14);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      border-radius: 14px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
+    .pill-maps {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(14, 165, 233, 0.14));
+      color: #7DD3FC;
+      border: 1px solid rgba(56, 189, 248, 0.42);
+      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
     }
-    .string-banner span {
+    .pill-whats {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.26), rgba(5, 150, 105, 0.16));
+      color: #6EE7B7;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.18);
+    }
+    .pill-call {
+      background: rgba(255, 255, 255, 0.08);
+      color: #F8FAFC;
+      border: 1px solid var(--border-light);
+    }
+
+    /* ESPECIFICAÇÕES TÉCNICAS */
+    .string-highlight {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.06));
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+    .string-highlight span {
       display: block;
       font-size: 11px;
-      color: #FCD34D;
+      color: var(--solar-light);
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .string-banner strong {
-      font-size: 15px;
-      color: #FFFFFF;
-    }
+    .string-highlight strong { font-size: 15px; color: #FFFFFF; }
 
-    .specs-grid {
+    .specs-matrix {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 9px;
     }
-    .spec-cell {
-      background: rgba(15, 23, 42, 0.48);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 10px 12px;
-      border-radius: 13px;
+    .matrix-item {
+      background: rgba(5, 8, 17, 0.52);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 11px 13px;
+      border-radius: 14px;
     }
-    .spec-cell.full { grid-column: span 2; }
-    .spec-cell span {
-      display: block;
-      font-size: 11px;
-      color: var(--text-secondary);
-    }
-    .spec-cell strong {
-      font-size: 14px;
-      color: #FFFFFF;
-    }
+    .matrix-item.span-2 { grid-column: span 2; }
+    .matrix-item span { display: block; font-size: 11px; color: var(--text-secondary); }
+    .matrix-item strong { font-size: 14px; color: #FFFFFF; font-weight: 700; }
 
-    /* CHECKLIST GLASS */
-    .check-header {
+    /* CHECKLIST CUSTOMIZADO */
+    .chk-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 6px;
     }
-    .prog-pill {
-      background: rgba(56, 189, 248, 0.2);
+    .chk-counter {
+      background: rgba(56, 189, 248, 0.18);
       color: #7DD3FC;
       border: 1px solid rgba(56, 189, 248, 0.35);
       font-size: 11px;
       font-weight: 800;
-      padding: 2px 9px;
+      padding: 3px 10px;
       border-radius: 99px;
     }
-    .check-item {
+    .chk-row {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 11px 4px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       cursor: pointer;
     }
-    .check-item:last-child { border-bottom: none; }
-    .check-item input[type="checkbox"] {
+    .chk-row:last-child { border-bottom: none; }
+    .chk-row input { display: none; }
+    .chk-box {
       width: 22px;
       height: 22px;
-      accent-color: var(--green);
+      border-radius: 7px;
+      border: 2px solid var(--border-light);
+      background: rgba(5, 8, 17, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
       flex-shrink: 0;
     }
-    .check-item span {
+    .chk-box svg {
+      width: 14px;
+      height: 14px;
+      color: #050811;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.18s ease;
+    }
+    .chk-row input:checked + .chk-box {
+      background: var(--emerald);
+      border-color: var(--emerald);
+      box-shadow: 0 0 12px var(--emerald-glow);
+    }
+    .chk-row input:checked + .chk-box svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .chk-text {
       font-size: 14px;
       font-weight: 600;
       color: #F1F5F9;
+      transition: color 0.2s;
     }
-    .check-item.done span {
+    .chk-row.done .chk-text {
       text-decoration: line-through;
-      color: var(--text-secondary);
+      color: var(--text-muted);
     }
 
-    .time-strip {
+    .time-bar {
       display: flex;
       justify-content: space-around;
-      border-radius: 14px;
-      padding: 10px;
-      font-size: 12px;
+      border-radius: 16px;
+      padding: 12px;
+      font-size: 12.5px;
       color: var(--text-secondary);
     }
-    .time-strip strong { color: #FFFFFF; }
+    .time-bar strong { color: #FFFFFF; font-weight: 800; }
 
-    /* DOCK DE AÇÕES FIXO NO RODAPÉ */
-    .glass-action-dock {
+    /* ==========================================
+       DOCK DE AÇÕES DE CAMPO (4 BOTÕES PREMIUM)
+       ========================================== */
+    .command-dock {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(11, 19, 43, 0.85);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-top: 1px solid var(--glass-border);
-      padding: 10px 12px calc(10px + var(--safe-bottom));
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      background: rgba(8, 13, 26, 0.88);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border-top: 1px solid var(--border-light);
+      padding: 12px 14px calc(12px + var(--safe-bottom));
       z-index: 200;
     }
-    .dock-action {
-      padding: 13px 8px;
-      border-radius: 14px;
+    .command-grid {
+      max-width: 540px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+    .cmd-btn {
+      padding: 13px 10px;
+      border-radius: 16px;
       font-size: 13px;
       font-weight: 800;
+      letter-spacing: 0.2px;
       border: 1px solid transparent;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      transition: transform 0.12s;
+      gap: 8px;
+      transition: transform 0.14s ease, box-shadow 0.2s ease;
     }
-    .dock-action:active { transform: scale(0.96); }
-    .act-route { background: rgba(56, 189, 248, 0.22); color: #7DD3FC; border-color: rgba(56, 189, 248, 0.45); }
-    .act-start { background: rgba(245, 158, 11, 0.24); color: #FCD34D; border-color: rgba(245, 158, 11, 0.5); }
-    .act-prob { background: rgba(239, 68, 68, 0.22); color: #FCA5A5; border-color: rgba(239, 68, 68, 0.45); }
-    .act-done { background: linear-gradient(135deg, #10B981, #059669); color: #FFFFFF; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); }
+    .cmd-btn:active { transform: scale(0.95); }
+
+    .cmd-transit {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(2, 132, 199, 0.16));
+      color: #7DD3FC;
+      border-color: rgba(56, 189, 248, 0.42);
+      box-shadow: 0 4px 18px rgba(56, 189, 248, 0.14);
+    }
+    .cmd-start {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.18));
+      color: #FCD34D;
+      border-color: rgba(245, 158, 11, 0.48);
+      box-shadow: 0 4px 18px rgba(245, 158, 11, 0.16);
+    }
+    .cmd-issue {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.22), rgba(225, 29, 72, 0.15));
+      color: #FDA4AF;
+      border-color: rgba(244, 63, 94, 0.42);
+    }
+    .cmd-finish {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 6px 22px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
 
     /* ==========================================
-       5. MODAL BOTTOM SHEET GLASS (PROBLEMA)
+       5. MODAL BOTTOM SHEET (PROBLEMA)
        ========================================== */
-    .modal-backdrop {
+    .sheet-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 8, 18, 0.72);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(3, 6, 14, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       align-items: flex-end;
       z-index: 1000;
     }
-    .glass-sheet {
+    .bottom-sheet {
       width: 100%;
       max-width: 540px;
       margin: 0 auto;
-      background: rgba(17, 27, 48, 0.92);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border-top: 1px solid var(--glass-highlight);
-      border-radius: 28px 28px 0 0;
-      padding: 12px 18px calc(22px + var(--safe-bottom));
-      animation: sheetRise 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+      background: #0F172A;
+      border-top: 1px solid var(--border-light);
+      border-radius: 30px 30px 0 0;
+      padding: 12px 20px calc(24px + var(--safe-bottom));
+      box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.7);
+      animation: sheetUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    @keyframes sheetRise {
+    @keyframes sheetUp {
       from { transform: translateY(100%); }
       to { transform: translateY(0); }
     }
-    .grabber {
-      width: 40px;
+    .sheet-handle {
+      width: 42px;
       height: 4px;
       border-radius: 99px;
-      background: rgba(255, 255, 255, 0.25);
-      margin: 0 auto 14px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 auto 16px;
     }
-    .reasons-grid {
+    .reasons-matrix {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 12px 0;
+      gap: 9px;
+      margin: 14px 0;
     }
-    .reason-pill {
-      padding: 11px 10px;
-      border-radius: 13px;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid var(--glass-border);
+    .reason-chip {
+      padding: 12px 11px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
       color: #E2E8F0;
       font-size: 12px;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       text-align: left;
       cursor: pointer;
+      transition: all 0.16s ease;
     }
-    .reason-pill.active {
-      background: rgba(239, 68, 68, 0.25);
-      border-color: var(--red);
-      color: #FCA5A5;
+    .reason-chip.active {
+      background: rgba(244, 63, 94, 0.2);
+      border-color: var(--rose);
+      color: #FDA4AF;
     }
-    .sheet-btns {
+    .sheet-actions {
       display: grid;
       grid-template-columns: 1fr 1.5fr;
       gap: 10px;
-      margin-top: 12px;
+      margin-top: 14px;
     }
-    .btn-ghost {
+    .btn-cancel {
       padding: 14px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
       color: #FFFFFF;
       font-weight: 700;
       cursor: pointer;
     }
-    .btn-danger-glow {
+    .btn-send-alert {
       padding: 14px;
-      border-radius: 14px;
+      border-radius: 15px;
       border: none;
-      background: linear-gradient(135deg, #EF4444, #DC2626);
+      background: linear-gradient(135deg, #F43F5E, #E11D48);
       color: #FFFFFF;
       font-weight: 800;
-      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(244, 63, 94, 0.4);
       cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- AVISO OFFLINE -->
+  <!-- FUNDO AURORA AMBIENTE -->
+  <div class="ambient-bg">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+  </div>
+
+  <!-- BANNER OFFLINE -->
   <div id="offline-banner" class="offline-pill hidden">
-    📡 Modo Offline — Sincronização automática ao reconectar
+    <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+    Modo Offline — Sincronização automática
   </div>
 
   <!-- TOAST -->
@@ -852,35 +1077,39 @@
 
   <!-- LOADER -->
   <div id="loader" class="loader-overlay hidden">
-    <div class="spinner"></div>
-    <p id="loader-text" style="font-size: 14px; font-weight: 600;">Sincronizando...</p>
+    <div class="spinner-ring"></div>
+    <p id="loader-text" style="font-size: 14px; font-weight: 700; color: #E2E8F0;">Sincronizando...</p>
   </div>
 
   <!-- ==========================================
        1. TELA DE LOGIN
        ========================================== -->
-  <section id="view-login" class="view">
-    <div class="login-container glass-panel">
-      <div class="logo-ring">
-        <img src="logotn.jpg" alt="TNSolar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230F172A%22/><text x=%2250%22 y=%2262%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22%23F59E0B%22>☀️</text></svg>'">
+  <section id="view-login" class="view view-animate">
+    <div class="login-box glass-card">
+      <div class="brand-emblem">
+        <img src="logotn.jpg" alt="TNSolar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230B1120%22/><circle cx=%2250%22 cy=%2250%22 r=%2222%22 fill=%22%23F59E0B%22/></svg>'">
       </div>
-      <div class="company-pill">TNSOLAR • CAMPO</div>
-      <h1>Acesso Técnico</h1>
-      <p class="login-sub">Entre com seu celular e PIN de 4 dígitos</p>
+      <div class="badge-tag">
+        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        TNSOLAR • CAMPO
+      </div>
+      <h1>Portal Técnico</h1>
+      <p class="login-sub">Acesse sua agenda de instalações em tempo real</p>
 
       <form id="form-login" autocomplete="off">
-        <div class="field-group">
+        <div class="input-wrap">
           <label for="login-tel">Celular (com DDD)</label>
-          <input type="tel" id="login-tel" class="glass-input" inputmode="tel" placeholder="(62) 99999-9999" required>
+          <input type="tel" id="login-tel" class="modern-input" inputmode="tel" placeholder="(62) 99999-9999" required>
         </div>
 
-        <div class="field-group">
-          <label for="login-pin">PIN de Acesso</label>
-          <input type="password" id="login-pin" class="glass-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" required>
+        <div class="input-wrap">
+          <label for="login-pin">PIN de Segurança</label>
+          <input type="password" id="login-pin" class="modern-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" required>
         </div>
 
-        <button type="submit" class="btn-solar-glass">
+        <button type="submit" class="btn-primary-solar">
           ENTRAR NA AGENDA
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
       </form>
 
@@ -896,58 +1125,79 @@
        2. TELA PRINCIPAL (AGENDA & HISTÓRICO)
        ========================================== -->
   <section id="view-home" class="view hidden">
-    <header class="glass-header">
-      <div class="brand-mini">
+    <header class="top-bar">
+      <div class="user-profile">
         <img src="logotn.jpg" alt="TNSolar" onerror="this.style.display='none'">
         <div>
-          <span>TNSOLAR</span>
+          <span>TNSOLAR CAMPO</span>
           <h2 id="colab-nome">Olá, Técnico</h2>
         </div>
       </div>
-      <div class="header-actions">
-        <button onclick="sincronizarDados(true)" class="glass-icon-btn" aria-label="Atualizar">🔄</button>
-        <button onclick="confirmarLogout()" class="glass-icon-btn" aria-label="Sair">🚪</button>
+      <div class="icon-actions">
+        <button onclick="sincronizarDados(true)" class="icon-btn" aria-label="Atualizar">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+        <button onclick="confirmarLogout()" class="icon-btn" aria-label="Sair">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
       </div>
     </header>
 
-    <div class="metrics-strip">
-      <div class="metric-card glass-panel">
-        <span>Obras Hoje</span>
-        <strong id="count-hoje">0</strong>
+    <div class="kpi-grid">
+      <div class="kpi-box glass-card">
+        <div class="kpi-info">
+          <span>Obras Hoje</span>
+          <strong id="count-hoje">0</strong>
+        </div>
+        <div class="kpi-icon kpi-solar">
+          <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
       </div>
-      <div class="metric-card glass-panel">
-        <span>Concluídas (Mês)</span>
-        <strong id="count-mes" style="color: var(--green);">0</strong>
+
+      <div class="kpi-box glass-card">
+        <div class="kpi-info">
+          <span>Concluídas (Mês)</span>
+          <strong id="count-mes" style="color: #34D399;">0</strong>
+        </div>
+        <div class="kpi-icon kpi-green">
+          <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
       </div>
     </div>
 
     <div id="fila-offline-box" class="queue-banner hidden">
       <button onclick="processarFilaOffline()" class="queue-btn">
-        ⏳ <span id="fila-count">0</span> atualização(ões) aguardando sinal — Toque para reenviar
+        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span><strong id="fila-count">0</strong> atualização(ões) na fila — Toque para sincronizar</span>
       </button>
     </div>
 
-    <main id="tab-agenda" class="main-scroll">
+    <main id="tab-agenda" class="feed-container">
       <div id="lista-obras-agenda"></div>
-      <footer class="flownest-footer" style="margin-top: 16px;">
+      <footer class="flownest-footer" style="margin-top: 20px;">
         TNSolar • Desenvolvido by <strong>FlowNest</strong>
       </footer>
     </main>
 
-    <main id="tab-historico" class="main-scroll hidden">
-      <h3 class="section-label">Concluídas neste mês</h3>
+    <main id="tab-historico" class="feed-container hidden">
+      <h3 class="group-heading">
+        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Concluídas neste mês
+      </h3>
       <div id="lista-obras-historico"></div>
-      <footer class="flownest-footer" style="margin-top: 16px;">
+      <footer class="flownest-footer" style="margin-top: 20px;">
         TNSolar • Desenvolvido by <strong>FlowNest</strong>
       </footer>
     </main>
 
-    <nav class="ios-tabbar">
-      <button class="tab-pill active" onclick="mudarAba('agenda', this)">
-        📋 Minha Agenda
+    <nav class="floating-nav">
+      <button class="nav-tab active" onclick="mudarAba('agenda', this)">
+        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Minha Agenda
       </button>
-      <button class="tab-pill" onclick="mudarAba('historico', this)">
-        ✅ Histórico
+      <button class="nav-tab" onclick="mudarAba('historico', this)">
+        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Histórico
       </button>
     </nav>
   </section>
@@ -956,127 +1206,189 @@
        3. DETALHES DA OBRA
        ========================================== -->
   <section id="view-detalhes" class="view hidden">
-    <header class="glass-header">
-      <button onclick="voltarParaAgenda()" class="back-pill">← Voltar</button>
+    <header class="top-bar">
+      <button onclick="voltarParaAgenda()" class="btn-back">
+        <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Voltar
+      </button>
       <div style="text-align: center;">
-        <strong id="det-id" style="display:block; font-size: 14px;">OS-0000</strong>
+        <strong id="det-id" style="display:block; font-size: 14px; font-weight: 800;">OS-0000</strong>
         <span id="det-data" style="font-size: 11px; color: var(--text-secondary);">00/00/0000</span>
       </div>
-      <span id="det-status" class="status-pill st-Agendada">Agendada</span>
+      <span id="det-status" class="status-badge st-Agendada">
+        <span class="status-dot"></span>
+        <span>Agendada</span>
+      </span>
     </header>
 
-    <main class="detail-scroll">
-      <div id="box-alerta" class="critical-glass-alert hidden">
-        <strong>⚠️ ATENÇÃO NO LOCAL</strong>
-        <p id="det-alerta"></p>
-      </div>
-
-      <div class="detail-card glass-panel">
-        <div class="micro-title">Cliente & Localização</div>
-        <h3 id="det-cliente" class="client-title">Nome do Cliente</h3>
-        <p id="det-endereco" class="address-sub" style="margin-bottom:0;">Endereço completo</p>
-
-        <div class="contact-row">
-          <a id="btn-maps" href="#" target="_blank" class="action-chip chip-maps">🗺️ Rota</a>
-          <a id="btn-whats" href="#" target="_blank" class="action-chip chip-whats">💬 WhatsApp</a>
-          <a id="btn-ligar" href="#" class="action-chip chip-call">📞 Ligar</a>
+    <main class="detail-body">
+      <div id="box-alerta" class="alert-hero hidden">
+        <div class="alert-hero-icon">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <strong>Atenção no Local</strong>
+          <p id="det-alerta"></p>
         </div>
       </div>
 
-      <div class="detail-card glass-panel">
-        <div class="micro-title">⚡ Guia Técnico de Montagem</div>
+      <div class="section-card glass-card">
+        <div class="section-tag">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Cliente & Localização
+        </div>
+        <h3 id="det-cliente" class="client-name">Nome do Cliente</h3>
+        <p id="det-endereco" style="font-size: 13.5px; color: var(--text-secondary);">Endereço completo</p>
+
+        <div class="quick-contact-grid">
+          <a id="btn-maps" href="#" target="_blank" class="contact-pill pill-maps">
+            <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            Rota
+          </a>
+          <a id="btn-whats" href="#" target="_blank" class="contact-pill pill-whats">
+            <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+          <a id="btn-ligar" href="#" class="contact-pill pill-call">
+            <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Ligar
+          </a>
+        </div>
+      </div>
+
+      <div class="section-card glass-card">
+        <div class="section-tag">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Guia Técnico de Montagem
+        </div>
         
-        <div class="string-banner">
+        <div class="string-highlight">
           <span>Divisão de Strings</span>
           <strong id="det-strings">-</strong>
         </div>
 
-        <div class="specs-grid">
-          <div class="spec-cell">
+        <div class="specs-matrix">
+          <div class="matrix-item">
             <span>Qtd. Placas</span>
             <strong id="det-placas">-</strong>
           </div>
-          <div class="spec-cell">
+          <div class="matrix-item">
             <span>Telhado</span>
             <strong id="det-telhado">-</strong>
           </div>
-          <div class="spec-cell full">
+          <div class="matrix-item span-2">
             <span>Modelo do Inversor</span>
             <strong id="det-inversor">-</strong>
           </div>
-          <div class="spec-cell">
+          <div class="matrix-item">
             <span>Local Inversor</span>
             <strong id="det-local-inv">-</strong>
           </div>
-          <div class="spec-cell">
+          <div class="matrix-item">
             <span>Local Padrão</span>
             <strong id="det-local-pad">-</strong>
           </div>
         </div>
       </div>
 
-      <div class="detail-card glass-panel">
-        <div class="check-header">
-          <div class="micro-title" style="margin-bottom:0;">🚚 Conferência de Carga</div>
-          <span id="checklist-progresso" class="prog-pill">0/0</span>
+      <div class="section-card glass-card">
+        <div class="chk-head">
+          <div class="section-tag" style="margin-bottom:0;">
+            <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Conferência de Carga
+          </div>
+          <span id="checklist-progresso" class="chk-counter">0/0</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
-          Confira os itens antes de sair da base:
+        <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">
+          Confira os equipamentos antes de sair da base:
         </p>
         <div id="det-checklist"></div>
       </div>
 
-      <div class="time-strip glass-panel">
+      <div class="time-bar glass-card">
         <span>Início: <strong id="det-hora-ini">--:--</strong></span>
         <span>Término: <strong id="det-hora-fim">--:--</strong></span>
       </div>
 
-      <footer class="flownest-footer" style="margin-top: 14px;">
+      <footer class="flownest-footer" style="margin-top: 16px;">
         TNSolar • Desenvolvido by <strong>FlowNest</strong>
       </footer>
     </main>
 
-    <footer class="glass-action-dock">
-      <button onclick="dispararStatus('A Caminho')" class="dock-action act-route">🚚 A Caminho</button>
-      <button onclick="dispararStatus('Em Andamento')" class="dock-action act-start">⚡ Iniciar Obra</button>
-      <button onclick="abrirModalProblema()" class="dock-action act-prob">🚨 Problema</button>
-      <button onclick="confirmarFinalizacao()" class="dock-action act-done">✅ Finalizar</button>
+    <!-- DOCK DE COMANDOS PREMIUM -->
+    <footer class="command-dock">
+      <div class="command-grid">
+        <button onclick="dispararStatus('A Caminho')" class="cmd-btn cmd-transit">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          A Caminho
+        </button>
+
+        <button onclick="dispararStatus('Em Andamento')" class="cmd-btn cmd-start">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Iniciar Obra
+        </button>
+
+        <button onclick="abrirModalProblema()" class="cmd-btn cmd-issue">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Problema
+        </button>
+
+        <button onclick="confirmarFinalizacao()" class="cmd-btn cmd-finish">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Finalizar
+        </button>
+      </div>
     </footer>
   </section>
 
   <!-- ==========================================
        4. MODAL REPORTAR PROBLEMA
        ========================================== -->
-  <div id="modal-problema" class="modal-backdrop hidden">
-    <div class="glass-sheet">
-      <div class="grabber"></div>
-      <h3 style="font-size: 18px; font-weight: 800;">🚨 Reportar Ocorrência</h3>
-      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">
-        Selecione o motivo para registrar na OS:
+  <div id="modal-problema" class="sheet-overlay hidden">
+    <div class="bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <svg class="ico" style="color: var(--rose);" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3 style="font-size: 18px; font-weight: 800;">Reportar Ocorrência</h3>
+      </div>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 3px;">
+        Selecione o motivo para registrar na Ordem de Serviço:
       </p>
 
-      <div class="reasons-grid">
-        <button type="button" class="reason-pill" onclick="escolherMotivo(this, 'Faltou material na carga')">📦 Faltou material</button>
-        <button type="button" class="reason-pill" onclick="escolherMotivo(this, 'Problema estrutural no telhado')">🏠 Telhado / Estrutura</button>
-        <button type="button" class="reason-pill" onclick="escolherMotivo(this, 'Cliente ausente / portão fechado')">🔒 Cliente ausente</button>
-        <button type="button" class="reason-pill" onclick="escolherMotivo(this, 'Chuva / Risco climático')">⛈️ Chuva / Clima</button>
+      <div class="reasons-matrix">
+        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Faltou material na carga')">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          Faltou material
+        </button>
+        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Problema estrutural no telhado')">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Telhado / Estrutura
+        </button>
+        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Cliente ausente / portão fechado')">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Cliente ausente
+        </button>
+        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Chuva / Risco climático')">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"/><polyline points="13 11 9 17 15 17 11 23"/></svg>
+          Chuva / Clima
+        </button>
       </div>
 
-      <div class="field-group" style="margin-bottom: 0;">
-        <textarea id="texto-problema" class="glass-input" rows="2" style="font-size: 14px;" placeholder="Observação adicional (opcional)..."></textarea>
+      <div class="input-wrap" style="margin-bottom: 0;">
+        <textarea id="texto-problema" class="modern-input" rows="2" style="font-size: 14px;" placeholder="Observação adicional (opcional)..."></textarea>
       </div>
 
-      <div class="sheet-btns">
-        <button type="button" onclick="fecharModalProblema()" class="btn-ghost">Cancelar</button>
-        <button type="button" onclick="enviarProblema()" class="btn-danger-glow">ENVIAR ALERTA</button>
+      <div class="sheet-actions">
+        <button type="button" onclick="fecharModalProblema()" class="btn-cancel">Cancelar</button>
+        <button type="button" onclick="enviarProblema()" class="btn-send-alert">
+          <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          ENVIAR ALERTA
+        </button>
       </div>
     </div>
   </div>
 
   <script>
-    // =========================================================
-    // CONFIGURAÇÃO DA API (COLE SUA URL DO GOOGLE APPS SCRIPT)
-    // =========================================================
     const API_URL = "https://script.google.com/macros/s/AKfycbxy4gljXBubArFos1QaPm6IN-wNPGj1_YWNHlSFaLoOF8To0VSHJoSCp7mVdA4PPp7UmA/exec";
 
     const KEY_USER = "tnsolar_colab_user";
@@ -1128,7 +1440,7 @@
     }
 
     // =========================================================
-    // LOGIN (COM HEADERS CORRIGIDOS PARA APPS SCRIPT)
+    // LOGIN
     // =========================================================
     document.getElementById("form-login").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -1166,7 +1478,7 @@
           erroEl.textContent = res.message || "Telefone ou PIN incorretos.";
         }
       } catch (err) {
-        erroEl.textContent = "Falha de conexão. Verifique a URL do script ou sua internet.";
+        erroEl.textContent = "Falha de conexão. Verifique sua internet.";
       } finally {
         mostrarLoader(false);
       }
@@ -1201,7 +1513,7 @@
 
     async function sincronizarDados(exibirFeedback = true) {
       if (!navigator.onLine) {
-        if (exibirFeedback) mostrarToast("📡 Modo offline: exibindo dados salvos");
+        if (exibirFeedback) mostrarToast("Modo offline: exibindo dados salvos");
         return;
       }
 
@@ -1217,10 +1529,10 @@
           minhasObras = data.obras || [];
           localStorage.setItem(KEY_CACHE_OBRAS, JSON.stringify(minhasObras));
           renderizarListas();
-          if (exibirFeedback) mostrarToast("✅ Agenda sincronizada!");
+          if (exibirFeedback) mostrarToast("Agenda sincronizada!");
         }
       } catch (err) {
-        if (exibirFeedback) mostrarToast("⚠️ Usando agenda salva no aparelho");
+        if (exibirFeedback) mostrarToast("Usando agenda salva no aparelho");
       } finally {
         mostrarLoader(false);
       }
@@ -1265,25 +1577,27 @@
 
       let htmlAgenda = "";
       if (grpHoje.length) {
-        htmlAgenda += `<h3 class="section-label">🔥 Hoje (${grpHoje.length})</h3>`;
+        htmlAgenda += `<h3 class="group-heading"><svg class="ico-sm" style="color:var(--solar-light)" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hoje (${grpHoje.length})</h3>`;
         htmlAgenda += grpHoje.map(o => montarCardObra(o, true)).join("");
       }
       if (grpAmanha.length) {
-        htmlAgenda += `<h3 class="section-label">📅 Amanhã (${grpAmanha.length})</h3>`;
+        htmlAgenda += `<h3 class="group-heading"><svg class="ico-sm" style="color:var(--cyan)" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Amanhã (${grpAmanha.length})</h3>`;
         htmlAgenda += grpAmanha.map(o => montarCardObra(o, false)).join("");
       }
       if (grpProximos.length) {
-        htmlAgenda += `<h3 class="section-label">🗓️ Próximos Dias (${grpProximos.length})</h3>`;
+        htmlAgenda += `<h3 class="group-heading"><svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Próximos Dias (${grpProximos.length})</h3>`;
         htmlAgenda += grpProximos.map(o => montarCardObra(o, false)).join("");
       }
 
       if (!htmlAgenda) {
         htmlAgenda = `
-          <div class="obra-card glass-panel" style="text-align:center; padding: 32px 16px;">
-            <p style="font-size: 34px; margin-bottom: 8px;">☀️</p>
+          <div class="job-card glass-card" style="text-align:center; padding: 38px 18px;">
+            <div style="width:48px; height:48px; border-radius:16px; background:rgba(245,158,11,0.15); color:var(--solar-light); display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+              <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+            </div>
             <strong style="font-size: 16px;">Nenhuma instalação pendente</strong>
-            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
-              Toque em 🔄 no topo para buscar novas escalas.
+            <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 5px;">
+              Toque em atualizar no topo para buscar novas escalas.
             </p>
           </div>
         `;
@@ -1293,7 +1607,7 @@
 
       containerHist.innerHTML = grpHistorico.length
         ? grpHistorico.map(o => montarCardObra(o, false)).join("")
-        : `<p style="text-align:center; font-size: 13px; color: var(--text-secondary); margin-top: 24px;">Nenhuma obra concluída neste mês.</p>`;
+        : `<p style="text-align:center; font-size: 13px; color: var(--text-secondary); margin-top: 28px;">Nenhuma obra concluída neste mês.</p>`;
     }
 
     function montarCardObra(obra, isHoje) {
@@ -1302,27 +1616,40 @@
       const mapsHref = obra.linkMaps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(obra.endereco || "")}`;
 
       return `
-        <article class="obra-card glass-panel ${isHoje ? "today-glow" : ""}" onclick="abrirObra('${obra.id}')">
-          <div class="card-top">
-            <span class="status-pill ${stClass}">${obra.status}</span>
-            <span class="date-tag">${dataBR}</span>
+        <article class="job-card glass-card ${isHoje ? "is-today" : ""}" onclick="abrirObra('${obra.id}')">
+          <div class="job-top">
+            <span class="status-badge ${stClass}">
+              <span class="status-dot"></span>
+              ${obra.status}
+            </span>
+            <span class="date-label">${dataBR}</span>
           </div>
 
-          <h4 class="client-title">${obra.clienteNome}</h4>
-          <p class="address-sub">📍 ${obra.endereco}</p>
+          <h4 class="client-name">${obra.clienteNome}</h4>
+          <p class="address-line">
+            <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>${obra.endereco}</span>
+          </p>
 
-          <div class="specs-chip">
-            ⚡ ${obra.qtdPlacas || 0} Placas • ${obra.tipoTelhado || "Telhado"} • ${obra.modeloInversor || "Inversor"}
+          <div class="tech-pill">
+            <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>${obra.qtdPlacas || 0} Placas • ${obra.tipoTelhado || "Telhado"} • ${obra.modeloInversor || "Inversor"}</span>
           </div>
 
-          ${obra.alertasAcesso ? `<div class="alert-strip">⚠️ ${obra.alertasAcesso}</div>` : ""}
+          ${obra.alertasAcesso ? `
+            <div class="warning-banner">
+              <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>${obra.alertasAcesso}</span>
+            </div>` : ""}
 
-          <div class="card-btns">
-            <a href="${mapsHref}" target="_blank" onclick="event.stopPropagation()" class="btn-glass-route">
-              🗺️ Rota
+          <div class="card-actions">
+            <a href="${mapsHref}" target="_blank" onclick="event.stopPropagation()" class="btn-card-route">
+              <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              Rota
             </a>
-            <button type="button" class="btn-glass-open">
-              Abrir Obra →
+            <button type="button" class="btn-card-open">
+              Abrir Obra
+              <svg class="ico-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
           </div>
         </article>
@@ -1342,8 +1669,8 @@
         : "--/--/----";
 
       const badge = document.getElementById("det-status");
-      badge.textContent = obraAtual.status;
-      badge.className = "status-pill st-" + (obraAtual.status || "Agendada").replace(/\s+/g, "");
+      badge.innerHTML = `<span class="status-dot"></span><span>${obraAtual.status}</span>`;
+      badge.className = "status-badge st-" + (obraAtual.status || "Agendada").replace(/\s+/g, "");
 
       const boxAlerta = document.getElementById("box-alerta");
       if (obraAtual.alertasAcesso) {
@@ -1396,9 +1723,12 @@
       container.innerHTML = itens.map((texto, index) => {
         const marcado = !!estadoSalvo[index];
         return `
-          <label class="check-item ${marcado ? "done" : ""}">
+          <label class="chk-row ${marcado ? "done" : ""}">
             <input type="checkbox" ${marcado ? "checked" : ""} onchange="alternarChecklist('${obra.id}', ${index}, ${itens.length}, this)">
-            <span>${texto}</span>
+            <span class="chk-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <span class="chk-text">${texto}</span>
           </label>
         `;
       }).join("");
@@ -1455,7 +1785,7 @@
 
       if (!navigator.onLine) {
         adicionarNaFilaOffline(payload);
-        mostrarToast("💾 Salvo offline! Enviará ao reconectar.");
+        mostrarToast("Salvo offline! Enviará ao reconectar.");
         return;
       }
 
@@ -1468,13 +1798,13 @@
         });
         const data = await res.json();
         if (data.status === "success") {
-          mostrarToast(`✅ Status "${novoStatus}" registrado!`);
+          mostrarToast(`Status "${novoStatus}" registrado!`);
         } else {
           adicionarNaFilaOffline(payload);
         }
       } catch (err) {
         adicionarNaFilaOffline(payload);
-        mostrarToast("⚠️ Sinal fraco: salvo na fila.");
+        mostrarToast("Sinal fraco: salvo na fila.");
       } finally {
         mostrarLoader(false);
       }
@@ -1486,7 +1816,7 @@
     function abrirModalProblema() {
       motivoSelecionado = "";
       document.getElementById("texto-problema").value = "";
-      document.querySelectorAll(".reason-pill").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".reason-chip").forEach(c => c.classList.remove("active"));
       document.getElementById("modal-problema").classList.remove("hidden");
     }
 
@@ -1497,7 +1827,7 @@
     function escolherMotivo(btn, motivo) {
       vibrarCelular(25);
       motivoSelecionado = motivo;
-      document.querySelectorAll(".reason-pill").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".reason-chip").forEach(c => c.classList.remove("active"));
       btn.classList.add("active");
     }
 
@@ -1549,7 +1879,7 @@
       localStorage.setItem(KEY_OFFLINE_QUEUE, JSON.stringify(pendentes));
       atualizarBadgeFila();
       if (pendentes.length === 0) {
-        mostrarToast("📡 Pendências offline sincronizadas!");
+        mostrarToast("Pendências offline sincronizadas!");
       }
     }
 
@@ -1573,15 +1903,21 @@
     }
 
     function mudarAba(aba, btn) {
-      document.querySelectorAll(".tab-pill").forEach(n => n.classList.remove("active"));
+      document.querySelectorAll(".nav-tab").forEach(n => n.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById("tab-agenda").classList.toggle("hidden", aba !== "agenda");
       document.getElementById("tab-historico").classList.toggle("hidden", aba !== "historico");
     }
 
     function trocarTela(idTela) {
-      document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
-      document.getElementById(idTela).classList.remove("hidden");
+      document.querySelectorAll(".view").forEach(v => {
+        v.classList.add("hidden");
+        v.classList.remove("view-animate");
+      });
+      const alvo = document.getElementById(idTela);
+      alvo.classList.remove("hidden");
+      void alvo.offsetWidth;
+      alvo.classList.add("view-animate");
     }
 
     function mostrarLoader(ativo, texto = "Carregando...") {
@@ -1592,7 +1928,7 @@
 
     function mostrarToast(mensagem) {
       const toast = document.getElementById("toast");
-      toast.textContent = mensagem;
+      toast.innerHTML = `<svg class="ico-sm" style="color:var(--emerald)" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg><span>${mensagem}</span>`;
       toast.classList.remove("hidden");
       setTimeout(() => toast.classList.add("hidden"), 3200);
     }
