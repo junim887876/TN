@@ -1,0 +1,19 @@
+{
+  "name": "SolarInvest Campo - Instalador",
+  "short_name": "SolarCampo",
+  "description": "Aplicativo de gestão e execução de instalações solares em campo.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#144A5C",
+  "theme_color": "#1F6B83",
+  "icons": [
+    {
+      "src": "logotn.jpg",
+      "sizes": "1254x1254",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
