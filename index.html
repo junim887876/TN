@@ -1,1345 +1,1449 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="robots" content="noindex, nofollow">
-    <title>SolarInvest & FlowNest (IA) • Hub 3D</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1F6B83">
+  <title>SolarInvest Campo - Instalador</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="logotn.jpg">
+  <style>
+    :root {
+      --petrol: #1F6B83;
+      --petrol-dark: #144A5C;
+      --solar: #F5A623;
+      --bg: #EEF2F6;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --text-sub: #475569;
+      --border: #CBD5E1;
 
-    <!-- Configurações PWA -->
-    <meta name="theme-color" content="#050814">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Solar & FlowNest">
+      --green: #15803D;
+      --green-bg: #DCFCE7;
+      --blue: #0369A1;
+      --blue-bg: #E0F2FE;
+      --amber: #B45309;
+      --amber-bg: #FEF3C7;
+      --red: #B91C1C;
+      --red-bg: #FEE2E2;
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Inter Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- QRious (Gerador de QR Code PIX) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-    <!-- MapLibre GL CSS & JS -->
-    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
-    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'] },
-                    colors: {
-                        'solar-bg': '#050814',
-                        'solar-neon': '#39ff4d',
-                        'solar-gold': '#fbbf24'
-                    }
-                }
-            }
-        }
-    </script>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    <style>
-        * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body {
-            touch-action: manipulation;
-            min-height: 100%;
-            background-color: #050814;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-        .tabular-nums { font-variant-numeric: tabular-nums; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.4;
+      overscroll-behavior-y: contain;
+    }
 
-        .page-ambient-bg {
-            position: fixed;
-            inset: 0;
-            background:
-                radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 85% 20%, rgba(14, 165, 233, 0.18) 0%, transparent 50%),
-                linear-gradient(180deg, #090e24 0%, #050814 60%, #040711 100%);
-            pointer-events: none;
-            z-index: 0;
-        }
+    .hidden { display: none !important; }
 
-        .hero-profit-box {
-            position: relative;
-            border-radius: 24px;
-            background: linear-gradient(135deg, rgba(22, 32, 58, 0.92) 0%, rgba(11, 18, 36, 0.96) 55%, rgba(12, 38, 34, 0.92) 100%);
-            border: 1px solid rgba(57, 255, 77, 0.35);
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
-        }
+    /* BANNER OFFLINE & TOAST */
+    .offline-banner {
+      background: #B91C1C;
+      color: #FFFFFF;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      padding: calc(6px + var(--safe-top)) 12px 6px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
 
-        .bolt-orb {
-            background: radial-gradient(circle at 35% 30%, rgba(57, 255, 77, 0.25), rgba(16, 185, 129, 0.06));
-            border: 1.5px solid rgba(57, 255, 77, 0.65);
-        }
+    .toast {
+      position: fixed;
+      top: calc(16px + var(--safe-top));
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 99px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 2000;
+      white-space: nowrap;
+      max-width: 92vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-        .client-dark-card {
-            background: linear-gradient(180deg, rgba(19, 28, 52, 0.95) 0%, rgba(11, 17, 34, 0.98) 100%);
-            border-radius: 22px;
-            border: 1px solid rgba(96, 165, 250, 0.24);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            contain: content;
-        }
+    /* LOADER */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.8);
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+    }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid rgba(255,255,255,0.25);
+      border-top-color: var(--solar);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-        .inner-profit-panel {
-            background: rgba(24, 35, 64, 0.75);
-            border: 1px solid rgba(148, 163, 184, 0.15);
-            border-radius: 14px;
-            padding: 10px 12px;
-        }
+    /* ==========================================
+       1. TELA DE LOGIN
+       ========================================== */
+    #view-login {
+      min-height: 100dvh;
+      background: linear-gradient(160deg, var(--petrol-dark) 0%, #0F172A 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-wrapper {
+      background: var(--surface);
+      width: 100%;
+      max-width: 400px;
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.35);
+      text-align: center;
+    }
+    .login-logo {
+      width: 84px;
+      height: 84px;
+      border-radius: 18px;
+      object-fit: cover;
+      margin: 0 auto 12px;
+      display: block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-badge {
+      display: inline-block;
+      background: var(--petrol);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 99px;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .login-wrapper h1 {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .subtitle {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+    .input-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 18px;
+      font-weight: 600;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: #F8FAFC;
+      color: var(--text);
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--petrol);
+      background: #FFFFFF;
+    }
+    #login-pin {
+      letter-spacing: 8px;
+      text-align: center;
+      font-size: 24px;
+    }
+    .btn-xl {
+      width: 100%;
+      padding: 18px;
+      font-size: 16px;
+      font-weight: 900;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-solar {
+      background: var(--solar);
+      color: #0F172A;
+      box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
+    }
+    .btn-solar:active { transform: scale(0.98); }
+    .error-msg {
+      color: var(--red);
+      font-weight: 700;
+      margin-top: 14px;
+      font-size: 14px;
+    }
 
-        .btn-more-details {
-            width: 100%;
-            padding: 9px 14px;
-            border-radius: 999px;
-            background: linear-gradient(180deg, #1d4ed8 0%, #173ba6 100%);
-            border: 1px solid rgba(96, 165, 250, 0.45);
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-        .btn-more-details:active { transform: scale(0.97); }
+    /* ==========================================
+       2. HEADER & RESUMO DO DIA
+       ========================================== */
+    .app-header {
+      background: var(--petrol);
+      color: #FFFFFF;
+      padding: calc(14px + var(--safe-top)) 16px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .role-tag {
+      background: var(--solar);
+      color: #0F172A;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+    .app-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255,255,255,0.18);
+      color: #FFFFFF;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .icon-btn:active { background: rgba(255,255,255,0.3); }
 
-        .top-glass-pill {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(148, 163, 184, 0.22);
-        }
+    .day-summary-bar {
+      background: var(--petrol-dark);
+      color: #FFFFFF;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+    }
+    .summary-label {
+      opacity: 0.85;
+      margin-right: 4px;
+    }
+    .queue-pill {
+      margin-left: auto;
+      background: var(--solar);
+      color: #0F172A;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+    }
 
-        /* LEDs Status Servidor / API */
-        .server-pill-online { background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(57, 255, 77, 0.45); box-shadow: 0 0 16px rgba(57, 255, 77, 0.15); }
-        .server-pill-offline { background: rgba(239, 68, 68, 0.14); border: 1px solid rgba(248, 113, 113, 0.55); box-shadow: 0 0 16px rgba(239, 68, 68, 0.22); }
-        .server-pill-checking { background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(251, 191, 36, 0.4); }
-        .led-glow-green { background-color: #39ff4d; box-shadow: 0 0 8px #39ff4d, 0 0 16px #22c55e; }
-        .led-glow-red { background-color: #ef4444; box-shadow: 0 0 8px #ef4444, 0 0 16px #dc2626; }
-        .led-glow-amber { background-color: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+    /* ==========================================
+       CARDS DA AGENDA
+       ========================================== */
+    .main-content {
+      padding: 14px 14px calc(95px + var(--safe-bottom));
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .section-heading {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-sub);
+      margin: 18px 0 10px;
+    }
+    .section-heading:first-child { margin-top: 4px; }
 
-        /* Modais Bottom Sheet */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(3, 6, 16, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-        }
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translate(-50%, 100%);
-            width: 100%;
-            max-width: 520px;
-            background: #10172d;
-            color: #ffffff;
-            border-top-left-radius: 26px;
-            border-top-right-radius: 26px;
-            padding: 18px 20px calc(env(safe-area-inset-bottom) + 28px);
-            z-index: 2001;
-            border-top: 1px solid rgba(96, 165, 250, 0.3);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-pill {
-            width: 40px;
-            height: 4px;
-            background: rgba(255,255,255,0.22);
-            border-radius: 99px;
-            margin: 0 auto 16px;
-        }
+    .obra-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 2px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .obra-card.destaque-hoje { border-color: var(--petrol); }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .st-Agendada { background: #E2E8F0; color: #334155; }
+    .st-ACaminho { background: var(--blue-bg); color: var(--blue); }
+    .st-EmAndamento { background: var(--amber-bg); color: var(--amber); }
+    .st-ComProblema { background: var(--red-bg); color: var(--red); }
+    .st-Concluida { background: var(--green-bg); color: var(--green); }
 
-        /* Navegação Principal Fixa (3 Abas) */
-        .main-tab-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 1500;
-            background: rgba(9, 14, 34, 0.96);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(96, 165, 250, 0.25);
-            padding: 8px 12px calc(env(safe-area-inset-bottom) + 8px);
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.65);
-        }
-        .main-tab-btn {
-            flex: 1;
-            max-width: 180px;
-            padding: 8px 10px;
-            border-radius: 16px;
-            border: 1px solid transparent;
-            background: transparent;
-            color: #94a3b8;
-            font-size: 11px;
-            font-weight: 800;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .main-tab-btn i { font-size: 16px; }
-        .main-tab-btn.active[data-tab="solar"] {
-            background: rgba(245, 158, 11, 0.16);
-            border-color: rgba(245, 158, 11, 0.45);
-            color: #fbbf24;
-        }
-        .main-tab-btn.active[data-tab="software"] {
-            background: rgba(56, 189, 248, 0.16);
-            border-color: rgba(56, 189, 248, 0.45);
-            color: #38bdf8;
-        }
-        .main-tab-btn.active[data-tab="mapa"] {
-            background: rgba(57, 255, 77, 0.16);
-            border-color: rgba(57, 255, 77, 0.45);
-            color: #39ff4d;
-        }
+    .card-date {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+    .card-client {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .card-address {
+      font-size: 15px;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+    .card-specs-pill {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .card-alert-mini {
+      background: #FEF08A;
+      color: #713F12;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 10px;
+    }
+    .btn-card-route {
+      background: var(--blue);
+      color: #FFFFFF;
+      text-decoration: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 15px;
+      text-align: center;
+    }
+    .btn-card-open {
+      background: var(--petrol);
+      color: #FFFFFF;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+    }
 
-        /* Estilos Específicos da Aba Mapa 3D */
-        #view-mapa {
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-            background: #020617;
-            display: none;
-        }
-        #map { width: 100%; height: 100%; }
-        .map-header {
-            position: absolute;
-            top: calc(env(safe-area-inset-top) + 12px);
-            left: 12px; right: 12px; z-index: 100;
-            background: rgba(15, 23, 42, 0.92);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 16px; padding: 10px 14px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .map-controls {
-            position: absolute;
-            top: calc(env(safe-area-inset-top) + 72px);
-            right: 12px; z-index: 100;
-            display: flex; flex-direction: column; gap: 8px;
-        }
-        .btn-map-ctrl {
-            background: rgba(15, 23, 42, 0.92);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff; width: 44px; height: 44px; border-radius: 14px;
-            font-weight: 800; font-size: 13px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-        }
-        .btn-map-ctrl.unlocked { border-color: #10b981; color: #10b981; background: rgba(16,185,129,0.18); }
-        .btn-map-add {
-            position: absolute;
-            bottom: calc(env(safe-area-inset-bottom) + 138px);
-            right: 16px; z-index: 100; width: 56px; height: 56px;
-            border-radius: 50%; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff;
-            border: 2px solid rgba(255,255,255,0.25); display: none; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(37,99,235,0.55);
-        }
-        .map-bottom-bar {
-            position: absolute;
-            bottom: calc(env(safe-area-inset-bottom) + 76px);
-            left: 12px; right: 12px; z-index: 100;
-            display: flex; gap: 8px; pointer-events: none;
-        }
-        .btn-map-act {
-            flex: 1; pointer-events: auto;
-            background: rgba(15, 23, 42, 0.92);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #f8fafc; padding: 11px; border-radius: 14px;
-            font-weight: 700; font-size: 12px;
-            display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
-        }
-        .crosshair { position: absolute; inset: 0; z-index: 150; pointer-events: none; display: none; align-items: center; justify-content: center; flex-direction: column; }
-        .crosshair.active { display: flex; }
-        .crosshair-pin { width: 42px; height: 42px; border: 3px solid #2563eb; border-radius: 50%; background: rgba(37,99,235,0.25); }
-        .crosshair-btn { pointer-events: auto; margin-top: 16px; background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 24px; font-weight: 800; cursor: pointer; }
-        .custom-svg-pin { filter: drop-shadow(0 6px 12px rgba(0,0,0,0.65)); cursor: pointer; }
+    /* NAVEGAÇÃO INFERIOR */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 2px solid var(--border);
+      display: flex;
+      padding-bottom: var(--safe-bottom);
+      z-index: 150;
+    }
+    .nav-item {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-sub);
+      cursor: pointer;
+    }
+    .nav-item.active { color: var(--petrol); }
+    .nav-icon { font-size: 20px; }
 
-        .map-type-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; }
-        .map-type-btn { padding: 10px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: #090f22; color: #94a3b8; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
-        .map-type-btn.active[data-type="usina"] { background: rgba(245, 158, 11, 0.18); border-color: #f59e0b; color: #f59e0b; }
-        .map-type-btn.active[data-type="cliente"] { background: rgba(16, 185, 129, 0.18); border-color: #10b981; color: #10b981; }
-        .map-type-btn.active[data-type="aluguel"] { background: rgba(59, 130, 246, 0.18); border-color: #3b82f6; color: #3b82f6; }
-        .map-type-btn.active[data-type="software"] { background: rgba(139, 92, 246, 0.18); border-color: #8b5cf6; color: #8b5cf6; }
+    /* ==========================================
+       3. TELA DE DETALHES DA OBRA
+       ========================================== */
+    .detail-header { gap: 10px; }
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: #FFFFFF;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .os-code { font-weight: 900; font-size: 16px; }
+    .os-date { font-size: 12px; opacity: 0.85; }
 
-        .list-group { margin-bottom: 16px; }
-        .list-group-header {
-            font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
-            padding: 8px 12px; border-radius: 10px; margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255,255,255,0.12);
-        }
-        .list-group-count { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: rgba(255,255,255,0.1); color: #fff; }
-        .map-list-item { background: #090f22; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .detail-scroll {
+      padding-bottom: calc(175px + var(--safe-bottom));
+    }
 
-        #toast-notification {
-            position: fixed;
-            bottom: 82px;
-            left: 50%;
-            transform: translate(-50%, 140px);
-            z-index: 3000;
-            transition: transform 0.3s ease;
-            width: max-content;
-            max-width: 92vw;
-        }
-        #toast-notification.show { transform: translate(-50%, 0); }
-    </style>
+    .critical-alert {
+      background: #FEF08A;
+      border: 3px solid #CA8A04;
+      color: #713F12;
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+    .alert-header {
+      font-weight: 900;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .critical-alert p {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
+    .card-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--petrol);
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .client-name {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+    .address-full {
+      font-size: 16px;
+      color: var(--text-sub);
+      margin-bottom: 14px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 0.9fr;
+      gap: 8px;
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 8px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-maps { background: var(--blue); color: #FFFFFF; }
+    .btn-whats { background: var(--green); color: #FFFFFF; }
+    .btn-call { background: #E2E8F0; color: var(--text); }
+
+    /* GUIA TÉCNICO */
+    .spec-highlight {
+      background: #FFFBEB;
+      border: 2px solid var(--solar);
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .spec-highlight span {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--amber);
+      text-transform: uppercase;
+    }
+    .spec-highlight strong {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .spec-box {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+    .spec-box.full { grid-column: span 2; }
+    .spec-box span {
+      display: block;
+      font-size: 12px;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+    .spec-box strong {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    /* CHECKLIST DE CARGA */
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .progress-badge {
+      background: var(--petrol);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+    .card-hint {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 10px;
+      border-bottom: 1px solid #E2E8F0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .check-row:last-child { border-bottom: none; }
+    .check-row input[type="checkbox"] {
+      width: 26px;
+      height: 26px;
+      accent-color: var(--green);
+      flex-shrink: 0;
+    }
+    .check-row span {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .check-row.done span {
+      text-decoration: line-through;
+      color: var(--text-sub);
+    }
+
+    .time-log-bar {
+      display: flex;
+      justify-content: space-around;
+      background: #E2E8F0;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    /* DOCK DE AÇÕES EM TEMPO REAL */
+    .action-dock {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 2px solid var(--border);
+      padding: 10px 12px calc(10px + var(--safe-bottom));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+      z-index: 200;
+    }
+    .dock-btn {
+      padding: 15px 8px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 900;
+      color: #FFFFFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .dock-btn:active { transform: scale(0.97); }
+    .btn-route { background: var(--blue); }
+    .btn-start { background: #D97706; }
+    .btn-problem { background: var(--red); }
+    .btn-finish { background: var(--green); }
+
+    /* ==========================================
+       4. BOTTOM SHEET MODAL (PROBLEMA)
+       ========================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      display: flex;
+      align-items: flex-end;
+      z-index: 1000;
+    }
+    .modal-sheet {
+      background: var(--surface);
+      width: 100%;
+      border-radius: 24px 24px 0 0;
+      padding: 12px 20px calc(24px + var(--safe-bottom));
+      animation: slideUp 0.25s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .sheet-handle {
+      width: 44px;
+      height: 5px;
+      background: #CBD5E1;
+      border-radius: 99px;
+      margin: 0 auto 14px;
+    }
+    .modal-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin: 4px 0 14px;
+    }
+    .reasons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .reason-chip {
+      padding: 12px 8px;
+      border: 2px solid var(--border);
+      background: #F8FAFC;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+    }
+    .reason-chip.active {
+      border-color: var(--red);
+      background: var(--red-bg);
+      color: var(--red);
+    }
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 10px;
+    }
+    .btn-cancel { background: #E2E8F0; color: var(--text); }
+    .btn-danger-solid { background: var(--red); color: #FFFFFF; font-size: 15px; }
+  </style>
 </head>
-<body class="bg-solar-bg min-h-screen font-sans selection:bg-solar-neon selection:text-slate-950">
+<body>
 
-    <div class="page-ambient-bg"></div>
+  <!-- BANNER OFFLINE -->
+  <div id="offline-banner" class="offline-banner hidden">
+    📡 Sem internet — Ações salvas na fila para envio automático.
+  </div>
 
-    <!-- NOTIFICAÇÃO FLUTUANTE GLOBAL -->
-    <div id="toast-notification" class="bg-[#111933] border border-solar-neon/60 text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-bold">
-        <span class="w-5 h-5 rounded-full bg-solar-neon text-slate-950 flex items-center justify-center text-[10px] flex-shrink-0">
-            <i class="fa-solid fa-bolt"></i>
-        </span>
-        <span id="toast-text" class="truncate">Sincronizando...</span>
-    </div>
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
 
-    <!-- =========================================================================
-         ABA 1: ENERGIA SOLAR (SOLAR INVEST)
-         ========================================================================= -->
-    <div id="view-solar" class="relative z-10 w-full min-h-screen flex flex-col pb-24">
-        <header class="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-5 pb-3 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <!-- Logotipo SolarInvest -->
-            <div class="flex items-center gap-3 select-none">
-                <svg class="w-11 h-10 flex-shrink-0" viewBox="0 0 64 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g stroke="#FBBF24" stroke-width="2.2" stroke-linecap="round">
-                        <line x1="26" y1="4" x2="26" y2="10"/>
-                        <line x1="12" y1="9" x2="16" y2="14"/>
-                        <line x1="40" y1="9" x2="36" y2="14"/>
-                        <line x1="5" y1="21" x2="11" y2="23"/>
-                        <line x1="47" y1="21" x2="41" y2="23"/>
-                    </g>
-                    <path d="M13 33C13 24.7157 19.268 18 27 18C34.732 18 41 24.7157 41 33H13Z" fill="#FBBF24"/>
-                    <path d="M18 32L47 26L56 44L23 48L18 32Z" fill="#1D4ED8" stroke="#93C5FD" stroke-width="1.5" stroke-linejoin="round"/>
-                    <line x1="27.5" y1="30" x2="33.5" y2="46.5" stroke="#BAE6FD" stroke-width="1.2"/>
-                    <line x1="37.5" y1="28" x2="44.5" y2="45.2" stroke="#BAE6FD" stroke-width="1.2"/>
-                    <line x1="20.5" y1="39.5" x2="51.2" y2="34.5" stroke="#BAE6FD" stroke-width="1.2"/>
-                    <path d="M12 49C24 46 42 46 58 49" stroke="#39FF4D" stroke-width="2.2" stroke-linecap="round"/>
-                </svg>
-                <div>
-                    <div class="text-xl sm:text-2xl font-black tracking-tight leading-none">
-                        <span class="text-white">SOLAR</span><span class="text-amber-400">INVEST</span>
-                    </div>
-                    <p class="text-[9px] sm:text-[10px] font-semibold tracking-[0.22em] text-slate-300 uppercase mt-1">
-                        ENERGIA QUE GERA ECONOMIA
-                    </p>
-                </div>
-            </div>
+  <!-- LOADER -->
+  <div id="loader" class="loader-overlay hidden">
+    <div class="spinner"></div>
+    <p id="loader-text">Sincronizando...</p>
+  </div>
 
-            <!-- Controles Superiores Solar -->
-            <div class="flex flex-wrap items-center justify-center gap-2.5">
-                <!-- LED Servidor PC -->
-                <button onclick="openSolarServerModal()" id="solar-server-pill" class="server-pill-checking rounded-2xl px-3.5 py-2 flex items-center gap-2.5 transition-all active:scale-95 cursor-pointer">
-                    <span class="relative flex h-3 w-3 flex-shrink-0">
-                        <span id="solar-led-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                        <span id="solar-led-dot" class="relative inline-flex rounded-full h-3 w-3 led-glow-amber"></span>
-                    </span>
-                    <div class="text-left">
-                        <span id="solar-status-label" class="block text-[11px] font-extrabold tracking-wider uppercase text-amber-300 leading-none">VERIFICANDO...</span>
-                        <span id="solar-status-sub" class="block text-[9px] font-medium text-slate-300 leading-tight mt-0.5">Servidor PC</span>
-                    </div>
-                </button>
+  <!-- ==========================================
+       1. TELA DE LOGIN
+       ========================================== -->
+  <section id="view-login" class="view">
+    <div class="login-wrapper">
+      <img src="logotn.jpg" alt="Logo" class="login-logo">
+      <div class="brand-badge">SOLARINVEST CAMPO</div>
+      <h1>Acesso Técnico</h1>
+      <p class="subtitle">Entre com seu celular e PIN de 4 dígitos</p>
 
-                <!-- Seletor de Mês -->
-                <div class="top-glass-pill rounded-2xl px-4 py-2 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-200">
-                        <i class="fa-regular fa-calendar text-sm"></i>
-                    </div>
-                    <div class="text-left">
-                        <span class="block text-[10px] font-medium text-slate-400 leading-tight">Lucro Total do Mês</span>
-                        <div class="flex items-center gap-1.5">
-                            <select id="solar-month-filter" class="bg-transparent text-white font-extrabold text-sm capitalize cursor-pointer focus:outline-none pr-1" onchange="filterSolarByMonth()"></select>
-                            <i class="fa-solid fa-chevron-down text-slate-300 text-[10px] pointer-events-none"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Botão Engrenagem Central -->
-                <button onclick="openUnifiedConfigModal()" title="Configurações Gerais (Planilhas, FlowNest, Mapa e PIX)" class="top-glass-pill w-11 h-11 rounded-full flex items-center justify-center text-white hover:border-solar-neon/50 active:scale-90 transition-all cursor-pointer">
-                    <i class="fa-solid fa-gear text-sm"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Hero Card Lucro Solar -->
-        <section class="w-full max-w-3xl mx-auto px-4 sm:px-6 mt-2 mb-7">
-            <div class="hero-profit-box px-5 py-5 sm:px-9 sm:py-7 flex items-center justify-between gap-4">
-                <div class="bolt-orb w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-bolt text-2xl sm:text-3xl text-solar-neon"></i>
-                </div>
-                <div class="flex-1 text-center min-w-0">
-                    <div class="inline-flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-[0.14em] text-slate-200 mb-1">
-                        <i class="fa-solid fa-arrow-trend-up text-solar-neon"></i>
-                        <span id="solar-hero-month-title">LUCRO TOTAL DO MÊS</span>
-                    </div>
-                    <div class="my-1 flex items-baseline justify-center gap-1.5 sm:gap-2">
-                        <span class="text-2xl sm:text-4xl font-extrabold text-slate-100">R$</span>
-                        <span id="solar-total-revenue" class="tabular-nums text-4xl sm:text-6xl font-black text-solar-neon tracking-tight">0,00</span>
-                    </div>
-                    <div class="mt-2 inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.06] border border-white/10 text-[11px] sm:text-xs text-slate-200 font-medium">
-                        <span class="w-4 h-4 rounded-full bg-solar-neon text-slate-950 flex items-center justify-center text-[9px] font-black"><i class="fa-solid fa-check"></i></span>
-                        <span id="solar-month-subtitle">Lucro Líquido da Usina</span>
-                    </div>
-                </div>
-                <div class="hidden sm:flex items-center justify-center flex-shrink-0 w-24 h-20">
-                    <svg viewBox="0 0 110 80" class="w-full h-full" fill="none">
-                        <rect x="8" y="54" width="12" height="20" rx="2" fill="#39FF4D" fill-opacity="0.5"/>
-                        <rect x="26" y="45" width="12" height="29" rx="2" fill="#39FF4D" fill-opacity="0.65"/>
-                        <rect x="44" y="36" width="12" height="38" rx="2" fill="#39FF4D" fill-opacity="0.75"/>
-                        <rect x="62" y="26" width="12" height="48" rx="2" fill="#39FF4D" fill-opacity="0.88"/>
-                        <rect x="80" y="16" width="12" height="58" rx="2" fill="#39FF4D"/>
-                        <path d="M10 48C34 42 62 28 94 8" stroke="#6EE7B7" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M84 7H96V19" stroke="#6EE7B7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-            </div>
-        </section>
-
-        <!-- Lista de Clientes Solar -->
-        <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pb-8">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <i class="fa-solid fa-users text-sky-400 text-lg"></i>
-                    <h2 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">Clientes & Faturas</h2>
-                    <span id="solar-cards-badge" class="tabular-nums text-[11px] font-bold bg-white/10 text-slate-300 px-2.5 py-0.5 rounded-full border border-white/10">0</span>
-                    <span class="text-[11px] text-emerald-300 bg-emerald-500/10 border border-emerald-400/25 px-2.5 py-0.5 rounded-full font-medium">
-                        <i class="fa-brands fa-whatsapp mr-1"></i>Clique no nome para enviar PNG + Mensagem
-                    </span>
-                </div>
-                <div class="relative w-full sm:w-64">
-                    <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-                    <input type="text" id="solar-search-input" oninput="renderSolarDashboard()" placeholder="Buscar cliente solar..." class="w-full bg-white/[0.06] border border-white/15 rounded-full pl-9 pr-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-sky-400/60">
-                </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="solar-cards-container"></div>
-        </main>
-    </div>
-
-    <!-- =========================================================================
-         ABA 2: SOFTWARE / FLOWNEST (IA)
-         ========================================================================= -->
-    <div id="view-software" class="hidden relative z-10 w-full min-h-screen flex-col pb-24">
-        <header class="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-5 pb-3 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <!-- Logotipo FlowNest(IA) -->
-            <div class="flex items-center gap-3 select-none">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500/20 to-emerald-500/20 border border-sky-400/40 flex items-center justify-center shadow-lg">
-                    <i class="fa-solid fa-layer-group text-xl text-solar-neon"></i>
-                </div>
-                <div>
-                    <div class="text-xl sm:text-2xl font-black tracking-tight leading-none">
-                        <span class="text-white">FLOWNEST</span><span class="text-sky-400">(IA)</span>
-                    </div>
-                    <p class="text-[9px] sm:text-[10px] font-semibold tracking-[0.22em] text-slate-300 uppercase mt-1">
-                        GESTÃO DE LICENÇAS & SAAS
-                    </p>
-                </div>
-            </div>
-
-            <!-- Controles Superiores FlowNest -->
-            <div class="flex flex-wrap items-center justify-center gap-2.5">
-                <button onclick="loadFlowNestData(true)" id="fn-server-pill" class="server-pill-checking rounded-2xl px-3.5 py-2 flex items-center gap-2.5 transition-all active:scale-95 cursor-pointer">
-                    <span class="relative flex h-3 w-3 flex-shrink-0">
-                        <span id="fn-led-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                        <span id="fn-led-dot" class="relative inline-flex rounded-full h-3 w-3 led-glow-amber"></span>
-                    </span>
-                    <div class="text-left">
-                        <span id="fn-status-label" class="block text-[11px] font-extrabold tracking-wider uppercase text-amber-300 leading-none">CONECTANDO...</span>
-                        <span id="fn-status-sub" class="block text-[9px] font-medium text-slate-300 leading-tight mt-0.5">Apps Script FlowNest</span>
-                    </div>
-                </button>
-
-                <div class="top-glass-pill rounded-2xl px-4 py-2 flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-sky-400">
-                        <i class="fa-solid fa-filter text-xs"></i>
-                    </div>
-                    <div class="text-left">
-                        <span class="block text-[10px] font-medium text-slate-400 leading-tight">Filtrar Licenças</span>
-                        <div class="flex items-center gap-1.5">
-                            <select id="fn-status-filter" class="bg-transparent text-white font-extrabold text-sm cursor-pointer focus:outline-none pr-1" onchange="renderFlowNestDashboard()">
-                                <option value="TODOS" class="bg-[#0b1022] text-white">Todos os Clientes</option>
-                                <option value="ATIVO" class="bg-[#0b1022] text-emerald-400">Somente Ativos (Verde)</option>
-                                <option value="OFF" class="bg-[#0b1022] text-red-400">Bloqueados / OFF (Vermelho)</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down text-slate-300 text-[10px] pointer-events-none"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Botão Engrenagem Central -->
-                <button onclick="openUnifiedConfigModal()" title="Configurações Gerais (Planilhas, FlowNest, Mapa e PIX)" class="top-glass-pill w-11 h-11 rounded-full flex items-center justify-center text-white hover:border-solar-neon/50 active:scale-90 transition-all cursor-pointer">
-                    <i class="fa-solid fa-gear text-sm"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Barra de Controle Remoto Estética KB -->
-        <section id="kb-control-bar" class="hidden w-full max-w-3xl mx-auto px-4 sm:px-6 mt-1 mb-3">
-            <div class="top-glass-pill rounded-2xl px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 border border-sky-400/35">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-400/35 flex items-center justify-center text-sky-400 flex-shrink-0">
-                        <i class="fa-solid fa-car-side text-sm"></i>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-extrabold text-white">Estética KB (App Cliente)</span>
-                            <span id="kb-status-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/35">VERIFICANDO...</span>
-                        </div>
-                        <span id="kb-status-subtext" class="block text-[10px] text-slate-400 mt-0.5">Sincronizado via Apps Script Estética KB</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <button type="button" onclick="setKbEsteticaStatus('ATIVO')" id="btn-kb-ativo" class="flex-1 sm:flex-initial py-2 px-3.5 rounded-xl text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all active:scale-95 bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 cursor-pointer">
-                        <i class="fa-solid fa-check"></i><span>Ativo</span>
-                    </button>
-                    <button type="button" onclick="setKbEsteticaStatus('BLOQUEADO')" id="btn-kb-bloqueado" class="flex-1 sm:flex-initial py-2 px-3.5 rounded-xl text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all active:scale-95 bg-red-500/15 text-red-300 border border-red-500/40 cursor-pointer">
-                        <i class="fa-solid fa-ban"></i><span>Bloqueado</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Hero Card MRR FlowNest -->
-        <section class="w-full max-w-3xl mx-auto px-4 sm:px-6 mt-2 mb-7">
-            <div class="hero-profit-box px-5 py-5 sm:px-9 sm:py-7 flex items-center justify-between gap-4">
-                <div class="bolt-orb w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-sack-dollar text-2xl sm:text-3xl text-solar-neon"></i>
-                </div>
-                <div class="flex-1 text-center min-w-0">
-                    <div class="inline-flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-[0.14em] text-slate-200 mb-1">
-                        <i class="fa-solid fa-arrow-trend-up text-solar-neon"></i>
-                        <span>RECEITA MENSAL ATIVA (MRR)</span>
-                    </div>
-                    <div class="my-1 flex items-baseline justify-center gap-1.5 sm:gap-2">
-                        <span class="text-2xl sm:text-4xl font-extrabold text-slate-100">R$</span>
-                        <span id="fn-total-revenue" class="tabular-nums text-4xl sm:text-6xl font-black text-solar-neon tracking-tight">0,00</span>
-                    </div>
-                    <div class="mt-2 inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.06] border border-white/10 text-[11px] sm:text-xs text-slate-200 font-medium">
-                        <span class="w-4 h-4 rounded-full bg-solar-neon text-slate-950 flex items-center justify-center text-[9px] font-black"><i class="fa-solid fa-check"></i></span>
-                        <span id="fn-subtitle-display">0 ativos • R$ 0,00 total cadastrado</span>
-                    </div>
-                </div>
-                <div class="hidden sm:flex items-center justify-center flex-shrink-0 w-24 h-20">
-                    <svg viewBox="0 0 110 80" class="w-full h-full" fill="none">
-                        <rect x="8" y="54" width="12" height="20" rx="2" fill="#39FF4D" fill-opacity="0.5"/>
-                        <rect x="26" y="45" width="12" height="29" rx="2" fill="#39FF4D" fill-opacity="0.65"/>
-                        <rect x="44" y="36" width="12" height="38" rx="2" fill="#39FF4D" fill-opacity="0.75"/>
-                        <rect x="62" y="26" width="12" height="48" rx="2" fill="#39FF4D" fill-opacity="0.88"/>
-                        <rect x="80" y="16" width="12" height="58" rx="2" fill="#39FF4D"/>
-                        <path d="M10 48C34 42 62 28 94 8" stroke="#38BDF8" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M84 7H96V19" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-            </div>
-        </section>
-
-        <!-- Lista Assinantes FlowNest -->
-        <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pb-8">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <i class="fa-solid fa-users text-sky-400 text-lg"></i>
-                    <h2 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">Assinantes & Licenças</h2>
-                    <span id="fn-cards-badge" class="tabular-nums text-[11px] font-bold bg-white/10 text-slate-300 px-2.5 py-0.5 rounded-full border border-white/10">0</span>
-                </div>
-                <div class="flex items-center gap-2.5 w-full sm:w-auto">
-                    <button onclick="openFnNewClientModal()" class="bg-solar-neon hover:bg-emerald-400 active:scale-95 text-slate-950 font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-full flex items-center justify-center gap-1.5 shadow-[0_0_18px_rgba(57,255,77,0.35)] transition-all flex-shrink-0 cursor-pointer">
-                        <i class="fa-solid fa-user-plus text-xs"></i><span>Novo Cliente</span>
-                    </button>
-                    <div class="relative flex-1 sm:w-60">
-                        <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-                        <input type="text" id="fn-search-input" oninput="renderFlowNestDashboard()" placeholder="Buscar assinante..." class="w-full bg-white/[0.06] border border-white/15 rounded-full pl-9 pr-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-sky-400/60">
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="fn-cards-container"></div>
-        </main>
-    </div>
-
-    <!-- =========================================================================
-         ABA 3: MAPA 3D (USINAS, CLIENTES, IMÓVEIS & FLOWNEST IA)
-         ========================================================================= -->
-    <div id="view-mapa">
-        <div id="map"></div>
-
-        <!-- Controles do Mapa (3D e Lock) -->
-        <div class="map-controls">
-            <button class="btn-map-ctrl" id="btn3d">3D</button>
-            <button class="btn-map-ctrl" id="btnAdminAuth" title="Área do Empresário"><i data-lucide="lock"></i></button>
+      <form id="form-login" autocomplete="off">
+        <div class="input-group">
+          <label for="login-tel">Seu Celular (com DDD)</label>
+          <input type="tel" id="login-tel" inputmode="tel" placeholder="(62) 99999-9999" required>
         </div>
 
-        <!-- Mira de Precisão -->
-        <div class="crosshair" id="crosshair">
-            <div class="crosshair-pin"></div>
-            <button class="crosshair-btn" id="btnConfirmCrosshair"><i data-lucide="check"></i> Confirmar Ponto Aqui</button>
+        <div class="input-group">
+          <label for="login-pin">PIN de 4 Dígitos</label>
+          <input type="password" id="login-pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" required>
         </div>
 
-        <!-- Botão (+) -> Apenas para Empresário Logado -->
-        <button class="btn-map-add" id="btnToggleCrosshair"><i data-lucide="plus" style="width:26px;height:26px;"></i></button>
-
-        <!-- Top Bar do Mapa -->
-        <div class="map-header">
-            <div class="flex items-center gap-2 font-extrabold text-sm select-none cursor-pointer" id="brandBtn">
-                <i data-lucide="sun" class="text-amber-400 w-4 h-4"></i>
-                <span>Mapa 3D</span>
-                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/40 hidden" id="modeBadge">ADM</span>
-                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-red-500/20 text-red-400 border border-red-500/40 hidden" id="offlineBadge">OFFLINE</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-                <button class="btn-map-act !py-1.5 !px-2.5 !text-[11px]" id="btnSummary" style="display:none;"><i data-lucide="pie-chart" class="w-3.5 h-3.5"></i> Resumo</button>
-                <button onclick="openUnifiedConfigModal()" class="btn-map-act !py-1.5 !px-2.5 !text-[11px]" title="Configurar URL do Mapa, FlowNest e Solar"><i class="fa-solid fa-gear"></i></button>
-            </div>
-        </div>
-
-        <!-- Bottom Actions do Mapa -->
-        <div class="map-bottom-bar">
-            <button class="btn-map-act" id="btnList"><i data-lucide="list" class="w-4 h-4"></i> Pontos</button>
-            <button class="btn-map-act" id="btnSync"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Sincronizar</button>
-        </div>
-    </div>
-
-    <!-- =========================================================================
-         BARRA DE NAVEGAÇÃO PRINCIPAL FIXA (3 ABAS)
-         ========================================================================= -->
-    <nav class="main-tab-bar">
-        <button class="main-tab-btn active" data-tab="solar" onclick="switchMainTab('solar')">
-            <i class="fa-solid fa-solar-panel"></i>
-            <span>Energia Solar</span>
+        <button type="submit" class="btn btn-solar btn-xl">
+          ENTRAR NA MINHA AGENDA
         </button>
-        <button class="main-tab-btn" data-tab="software" onclick="switchMainTab('software')">
-            <i class="fa-solid fa-microchip"></i>
-            <span>FlowNest (IA)</span>
-        </button>
-        <button class="main-tab-btn" data-tab="mapa" onclick="switchMainTab('mapa')">
-            <i class="fa-solid fa-map-location-dot"></i>
-            <span>Mapa 3D</span>
-        </button>
+      </form>
+
+      <p id="login-erro" class="error-msg"></p>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       2. TELA PRINCIPAL (AGENDA & HISTÓRICO)
+       ========================================== -->
+  <section id="view-home" class="view hidden">
+    <header class="app-header">
+      <div class="header-info">
+        <span class="role-tag">EQUIPE TÉCNICA</span>
+        <h2 id="colab-nome">Olá, Instalador</h2>
+      </div>
+      <div class="header-actions">
+        <button onclick="sincronizarDados(true)" class="icon-btn" aria-label="Atualizar">🔄</button>
+        <button onclick="confirmarLogout()" class="icon-btn" aria-label="Sair">🚪</button>
+      </div>
+    </header>
+
+    <div class="day-summary-bar">
+      <div>
+        <span class="summary-label">Obras Hoje:</span>
+        <strong id="count-hoje">0</strong>
+      </div>
+      <div>
+        <span class="summary-label">Concluídas (Mês):</span>
+        <strong id="count-mes">0</strong>
+      </div>
+      <div id="fila-offline-badge" class="queue-pill hidden" onclick="processarFilaOffline()">
+        ⏳ <span id="fila-count">0</span> pendente(s)
+      </div>
+    </div>
+
+    <main id="tab-agenda" class="main-content">
+      <div id="lista-obras-agenda"></div>
+    </main>
+
+    <main id="tab-historico" class="main-content hidden">
+      <h3 class="section-heading">Obras Finalizadas Neste Mês</h3>
+      <div id="lista-obras-historico"></div>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="mudarAba('agenda', this)">
+        <span class="nav-icon">📋</span>
+        <span>Minha Agenda</span>
+      </button>
+      <button class="nav-item" onclick="mudarAba('historico', this)">
+        <span class="nav-icon">✅</span>
+        <span>Histórico</span>
+      </button>
     </nav>
+  </section>
 
-    <!-- =========================================================================
-         MODAIS UNIFICADOS (CONFIGURAÇÃO CENTRAL + SOLAR + FLOWNEST + MAPA)
-         ========================================================================= -->
+  <!-- ==========================================
+       3. TELA DE DETALHES DA OBRA
+       ========================================== -->
+  <section id="view-detalhes" class="view hidden">
+    <header class="app-header detail-header">
+      <button onclick="voltarParaAgenda()" class="back-btn">← Voltar</button>
+      <div class="header-center">
+        <span id="det-id" class="os-code">OS-0000</span>
+        <span id="det-data" class="os-date">00/00/0000</span>
+      </div>
+      <span id="det-status" class="status-badge st-Agendada">Agendada</span>
+    </header>
 
-    <!-- MODAL DE CONFIGURAÇÕES CENTRALIZADO (ENGRENAGEM) -->
-    <div class="modal-overlay" id="unified-config-overlay" onclick="closeUnifiedConfigModal()"></div>
-    <div class="bottom-sheet" id="unified-config-sheet">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-3">
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-gear text-solar-neon"></i>
-                <h3 class="text-xl font-extrabold text-white">Configurações Gerais</h3>
-            </div>
-            <button onclick="closeUnifiedConfigModal()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300">
-                <i class="fa-solid fa-xmark"></i>
+    <main class="main-content detail-scroll">
+      <div id="box-alerta" class="critical-alert hidden">
+        <div class="alert-header">⚠️ ATENÇÃO ANTES DE ENTRAR</div>
+        <p id="det-alerta"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-label">CLIENTE & ENDEREÇO</div>
+        <h3 id="det-cliente" class="client-name">Nome do Cliente</h3>
+        <p id="det-endereco" class="address-full">Endereço completo</p>
+
+        <div class="contact-grid">
+          <a id="btn-maps" href="#" target="_blank" class="btn btn-maps">🗺️ GPS / Rota</a>
+          <a id="btn-whats" href="#" target="_blank" class="btn btn-whats">💬 WhatsApp</a>
+          <a id="btn-ligar" href="#" class="btn btn-call">📞 Ligar</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚡ GUIA TÉCNICO DE MONTAGEM</div>
+        
+        <div class="spec-highlight">
+          <span>Divisão de Strings</span>
+          <strong id="det-strings">-</strong>
+        </div>
+
+        <div class="spec-grid">
+          <div class="spec-box">
+            <span>Qtd. Placas</span>
+            <strong id="det-placas">-</strong>
+          </div>
+          <div class="spec-box">
+            <span>Telhado</span>
+            <strong id="det-telhado">-</strong>
+          </div>
+          <div class="spec-box full">
+            <span>Modelo do Inversor</span>
+            <strong id="det-inversor">-</strong>
+          </div>
+          <div class="spec-box">
+            <span>Local Inversor</span>
+            <strong id="det-local-inv">-</strong>
+          </div>
+          <div class="spec-box">
+            <span>Local Padrão</span>
+            <strong id="det-local-pad">-</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-flex">
+          <div class="card-label">🚚 CONFERÊNCIA DE CARGA</div>
+          <span id="checklist-progresso" class="progress-badge">0/0</span>
+        </div>
+        <p class="card-hint">Marque os itens conferidos na caminhonete antes de sair:</p>
+        <div id="det-checklist" class="checklist-list"></div>
+      </div>
+
+      <div class="time-log-bar">
+        <span>Início: <strong id="det-hora-ini">--:--</strong></span>
+        <span>Término: <strong id="det-hora-fim">--:--</strong></span>
+      </div>
+    </main>
+
+    <footer class="action-dock">
+      <button onclick="dispararStatus('A Caminho')" class="dock-btn btn-route">🚚 Estou a Caminho</button>
+      <button onclick="dispararStatus('Em Andamento')" class="dock-btn btn-start">⚡ Iniciei Instalação</button>
+      <button onclick="abrirModalProblema()" class="dock-btn btn-problem">🚨 Problema</button>
+      <button onclick="confirmarFinalizacao()" class="dock-btn btn-finish">✅ Finalizar Obra</button>
+    </footer>
+  </section>
+
+  <!-- ==========================================
+       4. MODAL DE REPORTAR PROBLEMA
+       ========================================== -->
+  <div id="modal-problema" class="modal-backdrop hidden">
+    <div class="modal-sheet">
+      <div class="sheet-handle"></div>
+      <h3>🚨 Reportar Problema na Obra</h3>
+      <p class="modal-desc">Informe o ocorrido para registrar na OS:</p>
+
+      <div class="reasons-grid">
+        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Faltou material na carga')">📦 Faltou material</button>
+        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Problema estrutural no telhado')">🏠 Problema no telhado</button>
+        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Cliente ausente / portão fechado')">🔒 Cliente ausente</button>
+        <button type="button" class="reason-chip" onclick="escolherMotivo(this, 'Chuva / Risco elétrico no telhado')">⛈️ Chuva / Clima</button>
+      </div>
+
+      <div class="input-group">
+        <label for="texto-problema">Observação curta (opcional):</label>
+        <textarea id="texto-problema" rows="3" placeholder="Ex: Faltaram 2 conectores MC4..."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" onclick="fecharModalProblema()" class="btn btn-cancel">Cancelar</button>
+        <button type="button" onclick="enviarProblema()" class="btn btn-danger-solid">ENVIAR ALERTA</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================
+    // CONFIGURAÇÃO DA API (COLE SUA URL DO GOOGLE APPS SCRIPT)
+    // =========================================================
+    const API_URL = "COLE_AQUI_A_URL_DO_GOOGLE_APPS_SCRIPT";
+
+    const KEY_USER = "solar_colab_user";
+    const KEY_CACHE_OBRAS = "solar_colab_obras_cache";
+    const KEY_OFFLINE_QUEUE = "solar_colab_offline_queue";
+
+    let usuario = null;
+    let minhasObras = [];
+    let obraAtual = null;
+    let motivoSelecionado = "";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      registrarServiceWorker();
+      configurarMonitorRede();
+
+      document.getElementById("login-tel").addEventListener("input", (e) => {
+        let v = e.target.value.replace(/\D/g, "").slice(0, 11);
+        if (v.length > 6) v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+        else if (v.length > 2) v = v.replace(/^(\d{2})(\d{0,5})/, "($1) $2");
+        e.target.value = v;
+      });
+
+      const savedUser = localStorage.getItem(KEY_USER);
+      if (savedUser) {
+        usuario = JSON.parse(savedUser);
+        entrarNaAgenda();
+      }
+    });
+
+    function registrarServiceWorker() {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
+    }
+
+    function configurarMonitorRede() {
+      const atualizarStatusRede = () => {
+        const banner = document.getElementById("offline-banner");
+        if (navigator.onLine) {
+          banner.classList.add("hidden");
+          processarFilaOffline();
+        } else {
+          banner.classList.remove("hidden");
+        }
+      };
+      window.addEventListener("online", atualizarStatusRede);
+      window.addEventListener("offline", atualizarStatusRede);
+      atualizarStatusRede();
+    }
+
+    // =========================================================
+    // LOGIN
+    // =========================================================
+    document.getElementById("form-login").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const telefone = document.getElementById("login-tel").value.replace(/\D/g, "");
+      const pin = document.getElementById("login-pin").value.trim();
+      const erroEl = document.getElementById("login-erro");
+      erroEl.textContent = "";
+
+      if (telefone.length < 10 || pin.length !== 4) {
+        erroEl.textContent = "Digite o DDD + número e o PIN de 4 dígitos.";
+        return;
+      }
+
+      mostrarLoader(true, "Validando acesso...");
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "login", telefone, pin, playerId: "" })
+        });
+        const res = await response.json();
+
+        if (res.status === "success") {
+          if (res.user.perfil !== "Colaborador") {
+            erroEl.textContent = "Este app é exclusivo para instaladores em campo.";
+            mostrarLoader(false);
+            return;
+          }
+          usuario = res.user;
+          localStorage.setItem(KEY_USER, JSON.stringify(usuario));
+          vibrarCelular(40);
+          entrarNaAgenda();
+        } else {
+          erroEl.textContent = res.message || "Telefone ou PIN inválidos.";
+        }
+      } catch (err) {
+        erroEl.textContent = "Sem conexão com o servidor. Verifique sua internet.";
+      } finally {
+        mostrarLoader(false);
+      }
+    });
+
+    function entrarNaAgenda() {
+      document.getElementById("colab-nome").textContent = `Olá, ${usuario.nome.split(" ")[0]}`;
+      trocarTela("view-home");
+      carregarCacheLocal();
+      sincronizarDados(false);
+    }
+
+    function confirmarLogout() {
+      if (confirm("Deseja realmente sair da sua conta?")) {
+        localStorage.removeItem(KEY_USER);
+        usuario = null;
+        trocarTela("view-login");
+      }
+    }
+
+    // =========================================================
+    // SINCRONIZAÇÃO E CACHE
+    // =========================================================
+    function carregarCacheLocal() {
+      const cache = localStorage.getItem(KEY_CACHE_OBRAS);
+      if (cache) {
+        minhasObras = JSON.parse(cache);
+        renderizarListas();
+      }
+      atualizarBadgeFila();
+    }
+
+    async function sincronizarDados(exibirFeedback = true) {
+      if (!navigator.onLine) {
+        if (exibirFeedback) mostrarToast("📡 Modo offline: exibindo dados salvos");
+        return;
+      }
+
+      if (exibirFeedback) mostrarLoader(true, "Buscando obras...");
+
+      try {
+        await processarFilaOffline();
+        const url = `${API_URL}?action=getDados&perfil=Colaborador&userId=${usuario.id}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.status === "success") {
+          minhasObras = data.obras || [];
+          localStorage.setItem(KEY_CACHE_OBRAS, JSON.stringify(minhasObras));
+          renderizarListas();
+          if (exibirFeedback) mostrarToast("✅ Agenda atualizada!");
+        }
+      } catch (err) {
+        if (exibirFeedback) mostrarToast("⚠️ Usando agenda salva no aparelho");
+      } finally {
+        mostrarLoader(false);
+      }
+    }
+
+    // =========================================================
+    // RENDERIZAÇÃO DE LISTAS
+    // =========================================================
+    function renderizarListas() {
+      const containerAgenda = document.getElementById("lista-obras-agenda");
+      const containerHist = document.getElementById("lista-obras-historico");
+
+      const hoje = new Date();
+      const hojeStr = formatarDataLocalISO(hoje);
+
+      const amanha = new Date(hoje);
+      amanha.setDate(amanha.getDate() + 1);
+      const amanhaStr = formatarDataLocalISO(amanha);
+
+      const mesAtual = hojeStr.substring(0, 7);
+
+      const grpHoje = [];
+      const grpAmanha = [];
+      const grpProximos = [];
+      const grpHistorico = [];
+
+      minhasObras.forEach(obra => {
+        if (obra.status === "Concluida") {
+          if (obra.dataAgendada && obra.dataAgendada.startsWith(mesAtual)) {
+            grpHistorico.push(obra);
+          }
+          return;
+        }
+
+        if (obra.dataAgendada === hojeStr) grpHoje.push(obra);
+        else if (obra.dataAgendada === amanhaStr) grpAmanha.push(obra);
+        else grpProximos.push(obra);
+      });
+
+      document.getElementById("count-hoje").textContent = grpHoje.length;
+      document.getElementById("count-mes").textContent = grpHistorico.length;
+
+      let htmlAgenda = "";
+      if (grpHoje.length) {
+        htmlAgenda += `<h3 class="section-heading">🔥 HOJE (${grpHoje.length})</h3>`;
+        htmlAgenda += grpHoje.map(o => montarCardObra(o, true)).join("");
+      }
+      if (grpAmanha.length) {
+        htmlAgenda += `<h3 class="section-heading">📅 AMANHÃ (${grpAmanha.length})</h3>`;
+        htmlAgenda += grpAmanha.map(o => montarCardObra(o, false)).join("");
+      }
+      if (grpProximos.length) {
+        htmlAgenda += `<h3 class="section-heading">🗓️ PRÓXIMOS DIAS (${grpProximos.length})</h3>`;
+        htmlAgenda += grpProximos.map(o => montarCardObra(o, false)).join("");
+      }
+
+      if (!htmlAgenda) {
+        htmlAgenda = `
+          <div class="card" style="text-align:center; padding: 32px 16px;">
+            <p style="font-size: 36px; margin-bottom: 8px;">☀️</p>
+            <strong>Nenhuma instalação pendente!</strong>
+            <p class="card-hint" style="margin-top:4px;">Toque em 🔄 acima para verificar novas escalas.</p>
+          </div>
+        `;
+      }
+
+      containerAgenda.innerHTML = htmlAgenda;
+
+      containerHist.innerHTML = grpHistorico.length
+        ? grpHistorico.map(o => montarCardObra(o, false)).join("")
+        : `<p class="card-hint" style="text-align:center; margin-top:20px;">Nenhuma obra concluída neste mês ainda.</p>`;
+    }
+
+    function montarCardObra(obra, isHoje) {
+      const stClass = "st-" + (obra.status || "Agendada").replace(/\s+/g, "");
+      const dataBR = obra.dataAgendada ? obra.dataAgendada.split("-").reverse().join("/") : "";
+      const mapsHref = obra.linkMaps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(obra.endereco || "")}`;
+
+      return `
+        <article class="obra-card ${isHoje ? "destaque-hoje" : ""}" onclick="abrirObra('${obra.id}')">
+          <div class="card-top">
+            <span class="status-badge ${stClass}">${obra.status}</span>
+            <span class="card-date">${dataBR}</span>
+          </div>
+
+          <h4 class="card-client">${obra.clienteNome}</h4>
+          <p class="card-address">📍 ${obra.endereco}</p>
+
+          <div class="card-specs-pill">
+            ⚡ ${obra.qtdPlacas} Placas • ${obra.tipoTelhado || "Telhado"} • ${obra.modeloInversor || "Inversor"}
+          </div>
+
+          ${obra.alertasAcesso ? `<div class="card-alert-mini">⚠️ ${obra.alertasAcesso}</div>` : ""}
+
+          <div class="card-actions">
+            <a href="${mapsHref}" target="_blank" onclick="event.stopPropagation()" class="btn-card-route">
+              🗺️ Rota
+            </a>
+            <button type="button" class="btn-card-open">
+              Abrir Obra →
             </button>
-        </div>
+          </div>
+        </article>
+      `;
+    }
 
-        <p class="text-[11px] text-emerald-300/90 bg-emerald-500/10 border border-emerald-500/25 rounded-xl px-3 py-2 mb-4 leading-relaxed">
-            <i class="fa-solid fa-shield-halved mr-1"></i>
-            Todas as URLs e chaves ficam salvas <strong>somente na memória deste aparelho</strong> (localStorage).
-        </p>
+    // =========================================================
+    // DETALHES DA OBRA
+    // =========================================================
+    function abrirObra(idObra) {
+      obraAtual = minhasObras.find(o => String(o.id) === String(idObra));
+      if (!obraAtual) return;
 
-        <div class="space-y-4">
-            <!-- 1. ENERGIA SOLAR -->
-            <div class="bg-white/[0.03] border border-amber-500/25 rounded-2xl p-3.5 space-y-2.5">
-                <span class="block text-xs font-extrabold text-amber-400 uppercase tracking-wider">
-                    <i class="fa-solid fa-solar-panel mr-1"></i> 1. Aba Energia Solar (Solar Invest)
-                </span>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Link ou ID da Planilha Google Sheets</label>
-                    <input type="text" id="cfg-solar-sheet-id" placeholder="Cole o Link ou ID da Planilha..." class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Repositório Monitor Servidor PC (usuario/repo)</label>
-                    <input type="text" id="cfg-solar-github-repo" placeholder="Ex: junim887876/Aposta" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-400">
-                </div>
-            </div>
+      document.getElementById("det-id").textContent = obraAtual.id;
+      document.getElementById("det-data").textContent = obraAtual.dataAgendada
+        ? obraAtual.dataAgendada.split("-").reverse().join("/")
+        : "--/--/----";
 
-            <!-- 2. FLOWNEST (IA) -->
-            <div class="bg-white/[0.03] border border-sky-400/25 rounded-2xl p-3.5 space-y-2.5">
-                <span class="block text-xs font-extrabold text-sky-400 uppercase tracking-wider">
-                    <i class="fa-solid fa-microchip mr-1"></i> 2. Aba FlowNest (IA) — Licenças Software
-                </span>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">URL Google Apps Script (FlowNest IA)</label>
-                    <input type="url" id="cfg-fn-appscript-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-sky-400">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">URL Google Apps Script — Estética KB (Opcional)</label>
-                    <input type="url" id="cfg-kb-appscript-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-400">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Link de Acesso Portal FlowNest (Enviado no WhatsApp)</label>
-                    <input type="url" id="cfg-fn-portal-url" placeholder="https://seusistema.com.br" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-sky-400">
-                </div>
-            </div>
+      const badge = document.getElementById("det-status");
+      badge.textContent = obraAtual.status;
+      badge.className = "status-badge st-" + (obraAtual.status || "Agendada").replace(/\s+/g, "");
 
-            <!-- 3. MAPA 3D -->
-            <div class="bg-white/[0.03] border border-emerald-400/25 rounded-2xl p-3.5 space-y-2.5">
-                <span class="block text-xs font-extrabold text-solar-neon uppercase tracking-wider">
-                    <i class="fa-solid fa-map-location-dot mr-1"></i> 3. Aba Mapa 3D (Sincronização Offline/Online)
-                </span>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">URL Google Apps Script (Planilha do Mapa 3D)</label>
-                    <input type="url" id="cfg-map-sheet-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-solar-neon">
-                </div>
-            </div>
+      const boxAlerta = document.getElementById("box-alerta");
+      if (obraAtual.alertasAcesso) {
+        boxAlerta.classList.remove("hidden");
+        document.getElementById("det-alerta").textContent = obraAtual.alertasAcesso;
+      } else {
+        boxAlerta.classList.add("hidden");
+      }
 
-            <!-- 4. PIX OFICIAL -->
-            <div class="bg-white/[0.03] border border-white/15 rounded-2xl p-3.5 space-y-2.5">
-                <span class="block text-xs font-extrabold text-white uppercase tracking-wider">
-                    <i class="fa-brands fa-pix text-teal-400 mr-1"></i> 4. Código PIX Copia e Cola (QR Code das Faturas)
-                </span>
-                <div>
-                    <textarea id="cfg-pix-code" rows="2" placeholder="00020126330014br.gov.bcb.pix..." class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-solar-neon"></textarea>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Modo do Valor no QR Code PIX</label>
-                    <select id="cfg-pix-mode" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white font-semibold focus:outline-none">
-                        <option value="official_with_amount">Injetar Valor da Fatura/Mensalidade Automaticamente</option>
-                        <option value="official_exact">Usar Código PIX Oficial Exato (Sem valor fixo)</option>
-                    </select>
-                </div>
-            </div>
+      document.getElementById("det-cliente").textContent = obraAtual.clienteNome;
+      document.getElementById("det-endereco").textContent = obraAtual.endereco;
+      document.getElementById("btn-maps").href = obraAtual.linkMaps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(obraAtual.endereco || "")}`;
 
-            <div class="flex gap-2 pt-2">
-                <button onclick="saveUnifiedConfig()" class="flex-1 py-3.5 bg-solar-neon text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider cursor-pointer">
-                    Salvar Todas as Configurações
-                </button>
-                <button onclick="clearUnifiedConfig()" class="py-3.5 px-4 bg-red-500/15 text-red-400 border border-red-500/30 font-bold rounded-xl text-xs uppercase cursor-pointer">
-                    Limpar
-                </button>
-            </div>
-        </div>
-    </div>
+      const fone = String(obraAtual.clienteTelefone || "").replace(/\D/g, "");
+      document.getElementById("btn-whats").href = fone ? `https://wa.me/55${fone}` : "#";
+      document.getElementById("btn-ligar").href = fone ? `tel:${fone}` : "#";
 
-    <!-- MODAL DETALHES SERVIDOR PC (ABA SOLAR) -->
-    <div class="modal-overlay" id="solar-server-overlay" onclick="closeSolarServerModal()"></div>
-    <div class="bottom-sheet" id="solar-server-sheet">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-extrabold text-white">Servidor Django & Robô</h3>
-            <button onclick="closeSolarServerModal()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div id="solar-modal-server-banner" class="rounded-2xl p-4 mb-4 border border-white/10 bg-white/[0.04] text-center">
-            <span id="solar-modal-big-status" class="text-lg font-black uppercase text-amber-300">VERIFICANDO...</span>
-            <p id="solar-modal-server-desc" class="text-xs text-slate-300 mt-1">Consultando sinal...</p>
-        </div>
-        <div class="bg-white/[0.04] border border-white/10 rounded-2xl p-4 space-y-2 text-xs mb-4">
-            <div class="flex justify-between"><span>Último Sinal:</span><strong id="srv-last-seen">--</strong></div>
-            <div class="flex justify-between"><span>Tempo Decorrido:</span><strong id="srv-elapsed" class="text-sky-300">--</strong></div>
-            <div class="flex justify-between"><span>Atividade:</span><strong id="srv-robo-activity">--</strong></div>
-            <div class="flex justify-between"><span>Faturas Pendentes:</span><strong id="srv-ucs-pending" class="text-amber-300">--</strong></div>
-        </div>
-        <button onclick="checkSolarServerHealth(true)" class="w-full py-3.5 bg-sky-500/20 border border-sky-400/40 text-sky-200 font-extrabold rounded-2xl text-xs uppercase">Atualizar Status Agora</button>
-    </div>
+      document.getElementById("det-strings").textContent = obraAtual.divisaoStrings || "Padrão do projeto";
+      document.getElementById("det-placas").textContent = `${obraAtual.qtdPlacas || 0} módulos`;
+      document.getElementById("det-telhado").textContent = obraAtual.tipoTelhado || "-";
+      document.getElementById("det-inversor").textContent = obraAtual.modeloInversor || "-";
+      document.getElementById("det-local-inv").textContent = obraAtual.localInversor || "-";
+      document.getElementById("det-local-pad").textContent = obraAtual.localPadrao || "-";
 
-    <!-- MODAL DETALHES FATURA SOLAR -->
-    <div class="modal-overlay" id="solar-modal-overlay" onclick="closeSolarInvoiceModal()"></div>
-    <div class="bottom-sheet" id="solar-bottom-sheet">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-start mb-4 gap-3">
-            <div>
-                <h3 id="solar-modal-cliente-nome" class="text-2xl font-extrabold capitalize text-white">Cliente</h3>
-                <p id="solar-modal-mes-sub" class="text-xs text-slate-400 mt-0.5">Fatura</p>
-                <p id="solar-modal-vencimento" class="text-xs font-semibold text-sky-300 mt-1">Vencimento: --</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span id="solar-modal-status" class="text-[10px] font-extrabold px-3 py-1 rounded-full uppercase">STATUS</span>
-                <button onclick="closeSolarInvoiceModal()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-        </div>
-        <div id="solar-modal-body" class="space-y-3 mb-4 text-xs">
-            <div class="bg-white/[0.04] border border-white/10 rounded-2xl p-4 space-y-2">
-                <div class="flex justify-between"><span>Consumo Medido:</span><strong id="solar-m-kwh">0 kWh</strong></div>
-                <div class="flex justify-between"><span>Valor Energia (R$ 0,81/kWh):</span><strong id="solar-m-ckwh">R$ 0,00</strong></div>
-                <div class="flex justify-between"><span>Iluminação Pública (CIP):</span><strong id="solar-m-cip">R$ 0,00</strong></div>
-                <div class="flex justify-between text-slate-400 border-t border-white/10 pt-2"><span>Sem Desconto:</span><span id="solar-m-bruto" class="line-through text-red-400">R$ 0,00</span></div>
-                <div class="flex justify-between text-emerald-400"><span>Desconto (20% OFF):</span><strong id="solar-m-desc">- R$ 0,00</strong></div>
-                <div class="flex justify-between text-sm font-extrabold border-t border-white/15 pt-2"><span>Valor a Pagar:</span><span id="solar-m-fat" class="text-amber-300">R$ 0,00</span></div>
-            </div>
-            <div class="bg-white/[0.04] border border-white/10 rounded-2xl p-4 space-y-2">
-                <div class="flex justify-between"><span>Custo Geração Usina:</span><strong id="solar-m-cusina" class="text-red-400">- R$ 0,00</strong></div>
-                <div class="flex justify-between font-bold border-t border-white/10 pt-2"><span>Custo Total Usina:</span><span id="solar-m-ctotal" class="text-red-400">- R$ 0,00</span></div>
-            </div>
-        </div>
-        <div class="bg-emerald-500/15 border border-emerald-400/40 rounded-2xl p-4 text-center mb-4">
-            <span class="text-[11px] text-emerald-400 font-bold uppercase block">Seu Lucro Líquido Final</span>
-            <span id="solar-m-lucro" class="tabular-nums text-3xl font-black text-solar-neon">R$ 0,00</span>
-        </div>
-        <div id="solar-m-actions" class="grid grid-cols-1 gap-2">
-            <button id="solar-btn-wpp" class="w-full py-3.5 bg-[#25D366] text-slate-950 font-black rounded-2xl text-xs uppercase flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-base"></i><span>Enviar Fatura PNG + Mensagem</span></button>
-            <button id="solar-btn-dl" class="w-full py-3 bg-white/10 text-white font-bold rounded-2xl text-xs uppercase flex items-center justify-center gap-2"><i class="fa-solid fa-download"></i><span>Apenas Baixar PNG</span></button>
-        </div>
-    </div>
+      document.getElementById("det-hora-ini").textContent = obraAtual.horaInicio || "--:--";
+      document.getElementById("det-hora-fim").textContent = obraAtual.horaFim || "--:--";
 
-    <!-- MODAL NOVO CLIENTE FLOWNEST -->
-    <div class="modal-overlay" id="fn-new-overlay" onclick="closeFnNewClientModal()"></div>
-    <div class="bottom-sheet" id="fn-new-sheet">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-extrabold text-white">Cadastrar Cliente FlowNest (IA)</h3>
-            <button onclick="closeFnNewClientModal()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <form id="fn-new-form" onsubmit="submitFnNewClient(event)" class="space-y-3 text-xs">
-            <div class="grid grid-cols-2 gap-2.5">
-                <div><label class="block font-bold text-solar-neon uppercase mb-1">Nome / Login *</label><input type="text" id="fn-new-nome" required class="w-full bg-[#090f22] border border-white/20 rounded-xl px-3 py-2.5 text-white"></div>
-                <div><label class="block font-bold text-slate-300 uppercase mb-1">Empresa</label><input type="text" id="fn-new-empresa" class="w-full bg-[#090f22] border border-white/20 rounded-xl px-3 py-2.5 text-white"></div>
-            </div>
-            <div class="grid grid-cols-2 gap-2.5">
-                <div><label class="block font-bold text-slate-300 uppercase mb-1">Responsável</label><input type="text" id="fn-new-resp" class="w-full bg-[#090f22] border border-white/20 rounded-xl px-3 py-2.5 text-white"></div>
-                <div><label class="block font-bold text-slate-300 uppercase mb-1">WhatsApp</label><input type="tel" id="fn-new-tel" class="w-full bg-[#090f22] border border-white/20 rounded-xl px-3 py-2.5 text-white"></div>
-            </div>
-            <div class="grid grid-cols-3 gap-2">
-                <div><label class="block font-bold text-slate-300 uppercase mb-1">Dia Venc.</label><input type="number" id="fn-new-dia" min="1" max="31" class="w-full bg-[#090f22] border border-white/20 rounded-xl px-3 py-2 text-white"></div>
-                <div><label class="block font-bold text-slate-300 uppercase mb-1">Valor (R$)</label><input type="number" id="fn-new-valor" step="0.01" class="w-full bg-[#090f22] border border-white/20 rounded-xl px-3 py-2 text-solar-neon font-bold"></div>
-                <div><label class="block font-bold text-slate-300 uppercase mb-1">Status</label><select id="fn-new-status" class="w-full bg-[#090f22] border border-white/20 rounded-xl px-2 py-2 text-emerald-400 font-bold"><option value="ATIVO">ATIVO</option><option value="OFF">OFF</option></select></div>
-            </div>
-            <button type="submit" id="fn-btn-submit-new" class="w-full py-3.5 bg-solar-neon text-slate-950 font-black rounded-2xl uppercase">Cadastrar na Planilha</button>
-        </form>
-    </div>
+      montarChecklist(obraAtual);
 
-    <!-- MODAL EDITAR ASSINANTE FLOWNEST -->
-    <div class="modal-overlay" id="fn-edit-overlay" onclick="closeFnEditModal()"></div>
-    <div class="bottom-sheet" id="fn-edit-sheet">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-start mb-4">
-            <div>
-                <h3 id="fn-edit-nome" class="text-2xl font-extrabold text-white">Assinante</h3>
-                <p id="fn-edit-empresa" class="text-xs text-slate-400">FlowNest(IA)</p>
-            </div>
-            <button onclick="closeFnEditModal()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="grid grid-cols-2 gap-2.5 mb-4">
-            <button id="fn-edit-btn-ativar" class="py-3 rounded-xl font-black text-xs uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/50">Ativar (ATIVO)</button>
-            <button id="fn-edit-btn-off" class="py-3 rounded-xl font-black text-xs uppercase bg-red-500/20 text-red-300 border border-red-500/50">Bloquear (OFF)</button>
-        </div>
-        <div class="bg-white/[0.04] border border-white/10 rounded-2xl p-4 space-y-3 mb-4 text-xs">
-            <div class="grid grid-cols-2 gap-3">
-                <div><label class="block font-bold text-slate-300 uppercase mb-1">Dia Vencimento</label><input type="number" id="fn-edit-dia" min="1" max="31" class="w-full bg-[#090f22] border border-white/20 rounded-xl px-3 py-2.5 text-white font-bold"></div>
-                <div><label class="block font-bold text-slate-300 uppercase mb-1">Mensalidade (R$)</label><input type="number" id="fn-edit-valor" step="0.01" class="w-full bg-[#090f22] border border-white/20 rounded-xl px-3 py-2.5 text-solar-neon font-bold"></div>
-            </div>
-            <button id="fn-edit-btn-salvar" class="w-full py-3 bg-sky-500 text-slate-950 font-black rounded-xl uppercase">Salvar Alterações</button>
-        </div>
-        <div class="grid grid-cols-1 gap-2">
-            <button id="fn-edit-btn-wpp" class="w-full py-3.5 bg-[#25D366] text-slate-950 font-black rounded-2xl text-xs uppercase flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-base"></i><span>Enviar Cobrança PNG + Mensagem</span></button>
-            <button id="fn-edit-btn-dl" class="w-full py-3 bg-white/10 text-white font-bold rounded-2xl text-xs uppercase">Apenas Baixar PNG</button>
-            <button id="fn-edit-btn-remover" class="w-full py-3 bg-red-500/15 border border-red-500/40 text-red-400 font-extrabold rounded-2xl text-xs uppercase">Remover Assinante</button>
-        </div>
-    </div>
+      trocarTela("view-detalhes");
+      window.scrollTo(0, 0);
+    }
 
-    <!-- MODAIS DO MAPA 3D -->
-    <div class="modal-overlay" id="map-modal-overlay" onclick="closeMapModals()"></div>
+    function montarChecklist(obra) {
+      const container = document.getElementById("det-checklist");
+      const itens = (obra.checklistCarga || "")
+        .split(",")
+        .map(item => item.trim())
+        .filter(Boolean);
 
-    <!-- Modal Senha Empresário Mapa -->
-    <div class="bottom-sheet" id="modalAuth">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-extrabold">Área Restrita (Empresário)</h3>
-            <button onclick="closeMapModals()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i data-lucide="x" class="w-4 h-4"></i></button>
-        </div>
-        <input type="password" id="adminPasswordInput" placeholder="Digite sua senha (1234)..." class="w-full bg-[#090f22] border border-white/15 rounded-xl px-4 py-3 text-base text-white mb-3">
-        <button id="btnCheckAuth" class="w-full py-3.5 bg-blue-600 text-white font-extrabold rounded-xl">Acessar Modo Empresário</button>
-    </div>
+      if (!itens.length) {
+        container.innerHTML = `<p class="card-hint">Nenhum item de carga listado nesta OS.</p>`;
+        document.getElementById("checklist-progresso").textContent = "0/0";
+        return;
+      }
 
-    <!-- Modal Visitante Mapa -->
-    <div class="bottom-sheet" id="modalPublicView">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 id="pubTitle" class="text-lg font-extrabold">Detalhes do Ponto</h3>
-            <button onclick="closeMapModals()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i data-lucide="x" class="w-4 h-4"></i></button>
-        </div>
-        <div class="bg-[#090f22] border border-white/10 rounded-2xl p-4 mb-3">
-            <div id="pubTypeLabel" class="text-xs font-extrabold text-slate-400 uppercase">INFORMAÇÃO</div>
-            <div id="pubName" class="text-xl font-extrabold text-white mt-1">-</div>
-            <div id="pubKwh" class="text-base font-bold text-amber-400 mt-2">-</div>
-        </div>
-        <button id="btnPubMaps" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-extrabold rounded-xl flex items-center justify-center gap-2"><i data-lucide="navigation" class="w-4 h-4"></i> Abrir no Google Maps</button>
-    </div>
+      const chaveStorage = `solar_chk_${obra.id}`;
+      const estadoSalvo = JSON.parse(localStorage.getItem(chaveStorage) || "{}");
 
-    <!-- Modal Cadastro / Edição Ponto Mapa -->
-    <div class="bottom-sheet" id="modalForm">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 id="formTitle" class="text-lg font-extrabold">Novo Cadastro</h3>
-            <button onclick="closeMapModals()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i data-lucide="x" class="w-4 h-4"></i></button>
-        </div>
+      container.innerHTML = itens.map((texto, index) => {
+        const marcado = !!estadoSalvo[index];
+        return `
+          <label class="check-row ${marcado ? "done" : ""}">
+            <input type="checkbox" ${marcado ? "checked" : ""} onchange="alternarChecklist('${obra.id}', ${index}, ${itens.length}, this)">
+            <span>${texto}</span>
+          </label>
+        `;
+      }).join("");
 
-        <div class="map-type-selector">
-            <div class="map-type-btn active" data-type="usina"><i data-lucide="sun" class="w-4 h-4"></i> Usina</div>
-            <div class="map-type-btn" data-type="cliente"><i data-lucide="zap" class="w-4 h-4"></i> Cliente Solar</div>
-            <div class="map-type-btn" data-type="aluguel"><i data-lucide="home" class="w-4 h-4"></i> Imóvel</div>
-            <div class="map-type-btn" data-type="software"><i data-lucide="cpu" class="w-4 h-4"></i> FlowNest (IA)</div>
-        </div>
+      atualizarProgressoChecklist(estadoSalvo, itens.length);
+    }
 
-        <input type="hidden" id="pointId"><input type="hidden" id="pointLat"><input type="hidden" id="pointLng">
+    function alternarChecklist(idObra, idx, total, inputEl) {
+      vibrarCelular(25);
+      const chaveStorage = `solar_chk_${idObra}`;
+      const estadoSalvo = JSON.parse(localStorage.getItem(chaveStorage) || "{}");
+      estadoSalvo[idx] = inputEl.checked;
+      localStorage.setItem(chaveStorage, JSON.stringify(estadoSalvo));
 
-        <div class="space-y-3 text-xs">
-            <div><label id="lblName" class="block font-bold text-slate-400 uppercase mb-1">Nome do Ponto</label><input type="text" id="pointName" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-3 text-base text-white"></div>
+      inputEl.parentElement.classList.toggle("done", inputEl.checked);
+      atualizarProgressoChecklist(estadoSalvo, total);
+    }
 
-            <div id="locationTypeGroup"><label class="block font-bold text-slate-400 uppercase mb-1">Localização</label>
-                <select id="pointLocationType" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-3 text-base text-white">
-                    <option value="urbana">Urbana (Iluminação Pública R$ 21,00)</option>
-                    <option value="rural">Rural (Isento Iluminação Pública)</option>
-                </select>
-            </div>
+    function atualizarProgressoChecklist(estadoSalvo, total) {
+      const marcados = Object.values(estadoSalvo).filter(Boolean).length;
+      document.getElementById("checklist-progresso").textContent = `${marcados}/${total}`;
+    }
 
-            <div id="ownershipGroup"><label class="block font-bold text-slate-400 uppercase mb-1">Propriedade</label>
-                <select id="pointOwnership" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-3 text-base text-white">
-                    <option value="Proprio">100% Próprio</option>
-                    <option value="Sociedade">Sociedade (Com Sócio/Sogro)</option>
-                </select>
-            </div>
+    // =========================================================
+    // AÇÕES EM TEMPO REAL
+    // =========================================================
+    function confirmarFinalizacao() {
+      if (confirm("Confirmar que a instalação foi 100% concluída?")) {
+        dispararStatus("Concluida");
+      }
+    }
 
-            <div id="usinaSourceGroup" style="display:none;"><label class="block font-bold text-slate-400 uppercase mb-1">Usina Fornecedora</label>
-                <select id="pointSourceUsina" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-3 text-base text-white"></select>
-            </div>
+    async function dispararStatus(novoStatus, motivoProblema = "") {
+      if (!obraAtual) return;
+      vibrarCelular(60);
 
-            <div id="financeCalcCard" style="display:none;" class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3.5 space-y-1.5">
-                <div class="font-extrabold text-emerald-400 uppercase">📊 Demonstrativo Financeiro</div>
-                <div class="flex justify-between"><span>Faturamento Bruto:</span><strong id="calcBruto">R$ 0,00</strong></div>
-                <div class="flex justify-between"><span>Custo Produção (0,17/kWh):</span><strong id="calcCustoProd">R$ 0,00</strong></div>
-                <div class="flex justify-between"><span>Iluminação Pública:</span><strong id="calcIlum">R$ 0,00</strong></div>
-                <div class="flex justify-between text-sm font-extrabold text-solar-neon border-t border-white/10 pt-1.5"><span>Lucro Líquido:</span><strong id="calcLucro">R$ 0,00</strong></div>
-            </div>
+      const agoraHora = new Date().toTimeString().slice(0, 5);
 
-            <div class="flex gap-2.5">
-                <div id="kwhGroup" class="flex-1"><label id="lblKwh" class="block font-bold text-slate-400 uppercase mb-1">kWh / Mês</label><input type="number" id="pointKwh" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-3 text-base text-white"></div>
-                <div id="valGroup" class="flex-1"><label id="lblVal" class="block font-bold text-slate-400 uppercase mb-1">Valor / Desc.</label><input type="number" id="pointVal" value="20" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-3 text-base text-white"></div>
-            </div>
+      obraAtual.status = novoStatus;
+      if (novoStatus === "Em Andamento" && !obraAtual.horaInicio) obraAtual.horaInicio = agoraHora;
+      if (novoStatus === "Concluida") obraAtual.horaFim = agoraHora;
+      if (motivoProblema) obraAtual.motivoProblema = motivoProblema;
 
-            <div id="rentalStatusGroup" style="display:none;"><label id="lblStatus" class="block font-bold text-slate-400 uppercase mb-1">Status</label>
-                <select id="pointStatus" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-3 text-base text-white"></select>
-            </div>
+      localStorage.setItem(KEY_CACHE_OBRAS, JSON.stringify(minhasObras));
+      abrirObra(obraAtual.id);
 
-            <div><label class="block font-bold text-slate-400 uppercase mb-1">Observações</label><textarea id="pointNotes" rows="2" class="w-full bg-[#090f22] border border-white/15 rounded-xl px-3.5 py-2.5 text-base text-white"></textarea></div>
+      const payload = {
+        action: "atualizarStatusObra",
+        idObra: obraAtual.id,
+        novoStatus,
+        motivoProblema,
+        usuarioNome: usuario.nome
+      };
 
-            <button id="btnSavePoint" class="w-full py-3.5 bg-blue-600 text-white font-extrabold rounded-xl text-sm">Salvar Localmente e na Planilha</button>
-            <button id="btnFormMaps" class="w-full py-3 bg-emerald-500 text-slate-950 font-extrabold rounded-xl text-sm flex items-center justify-center gap-2"><i data-lucide="navigation" class="w-4 h-4"></i> Abrir no Google Maps</button>
-            <button id="btnDeletePoint" style="display:none;" class="w-full py-3 bg-red-500/15 border border-red-500/30 text-red-400 font-bold rounded-xl text-sm">Excluir Ponto</button>
-        </div>
-    </div>
+      if (!navigator.onLine) {
+        adicionarNaFilaOffline(payload);
+        mostrarToast("💾 Salvo offline! Enviará ao reconectar.");
+        return;
+      }
 
-    <!-- Modal Gestão Mapa -->
-    <div class="bottom-sheet" id="modalGestaoView">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 id="gestaoClientName" class="text-lg font-extrabold">Faturamento do Cliente</h3>
-            <button onclick="closeMapModals()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i data-lucide="x" class="w-4 h-4"></i></button>
-        </div>
-        <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 space-y-2 text-xs mb-4">
-            <div class="flex justify-between"><span>Consumo:</span><strong id="gConsumo">0 kWh</strong></div>
-            <div class="flex justify-between"><span>Usina:</span><strong id="gUsina">-</strong></div>
-            <div class="flex justify-between"><span>Localização:</span><strong id="gLocal">Urbana</strong></div>
-            <div class="flex justify-between border-t border-white/10 pt-2"><span>Faturamento Bruto:</span><strong id="gBruto" class="text-sky-400">R$ 0,00</strong></div>
-            <div class="flex justify-between"><span>Custo Produção:</span><strong id="gCustoProd" class="text-red-400">R$ 0,00</strong></div>
-            <div class="flex justify-between"><span>Iluminação Pública:</span><strong id="gIlum" class="text-red-400">R$ 0,00</strong></div>
-            <div class="flex justify-between text-base font-black text-solar-neon border-t border-white/10 pt-2"><span>LUCRO LÍQUIDO:</span><strong id="gLucro">R$ 0,00</strong></div>
-        </div>
-        <div class="space-y-2">
-            <button id="btnGestaoEditDirect" class="w-full py-3 bg-white/10 text-white font-bold rounded-xl text-xs uppercase">Editar Informações</button>
-            <button id="btnGestaoMaps" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-extrabold rounded-xl text-xs uppercase flex items-center justify-center gap-2"><i data-lucide="navigation" class="w-4 h-4"></i> Abrir no Google Maps</button>
-        </div>
-    </div>
-
-    <!-- Modal Lista Separada por Usinas e Categorias -->
-    <div class="bottom-sheet" id="modalList">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-extrabold">Pontos Cadastrados</h3>
-            <button onclick="closeMapModals()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i data-lucide="x" class="w-4 h-4"></i></button>
-        </div>
-        <div id="pointsContainer"></div>
-    </div>
-
-    <!-- Modal Resumo Consolidado Mapa -->
-    <div class="bottom-sheet" id="modalSummary">
-        <div class="modal-pill"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-extrabold">Balanço Geral (Mapa)</h3>
-            <button onclick="closeMapModals()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i data-lucide="x" class="w-4 h-4"></i></button>
-        </div>
-        <div id="summaryContent" class="text-xs"></div>
-    </div>
-
-    <script>
-        /* =====================================================================
-           CHAVES DE ARMAZENAMENTO UNIFICADAS (LOCALSTORAGE)
-           ===================================================================== */
-        const KEYS = {
-            SOLAR_SHEET_ID: 'solarinvest_sheet_id',
-            SOLAR_GITHUB_REPO: 'solarinvest_github_monitor_repo',
-            FN_APPSCRIPT_URL: 'flownest_appscript_url_v1',
-            KB_APPSCRIPT_URL: 'flownest_kb_appscript_url_v1',
-            FN_PORTAL_URL: 'flownest_portal_url_v1',
-            MAP_SHEET_URL: 'solar_sheet_url',
-            MAP_DB: 'solar_db',
-            MAP_QUEUE: 'solar_pending_queue',
-            MAP_VIEWPORT: 'solar_map_viewport',
-            PIX_CODE: 'unified_pix_code_v1',
-            PIX_MODE: 'unified_pix_mode_v1'
-        };
-
-        const DEFAULT_PIX = '00020126330014br.gov.bcb.pix0111709573141165204000053039865802BR5925Jose Elvecio Lopes Junior6009Sao Paulo62230519daqr2210911956886966304DDE3';
-        const DEFAULT_REPO = 'junim887876/Aposta';
-        const SOLAR_PORTAL_URL = 'https://junim887876.github.io/Energia/';
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast-notification');
-            document.getElementById('toast-text').innerText = msg;
-            toast.classList.add('show');
-            clearTimeout(window._toastTimer);
-            window._toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+      mostrarLoader(true, "Atualizando OS...");
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.status === "success") {
+          mostrarToast(`✅ Status "${novoStatus}" registrado!`);
+        } else {
+          adicionarNaFilaOffline(payload);
         }
+      } catch (err) {
+        adicionarNaFilaOffline(payload);
+        mostrarToast("⚠️ Sinal fraco: salvo na fila para reenvio.");
+      } finally {
+        mostrarLoader(false);
+      }
+    }
 
-        function escapeHtml(str) {
-            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    // =========================================================
+    // MODAL DE PROBLEMA
+    // =========================================================
+    function abrirModalProblema() {
+      motivoSelecionado = "";
+      document.getElementById("texto-problema").value = "";
+      document.querySelectorAll(".reason-chip").forEach(c => c.classList.remove("active"));
+      document.getElementById("modal-problema").classList.remove("hidden");
+    }
+
+    function fecharModalProblema() {
+      document.getElementById("modal-problema").classList.add("hidden");
+    }
+
+    function escolherMotivo(btn, motivo) {
+      vibrarCelular(25);
+      motivoSelecionado = motivo;
+      document.querySelectorAll(".reason-chip").forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    function enviarProblema() {
+      const obs = document.getElementById("texto-problema").value.trim();
+      const textoFinal = [motivoSelecionado, obs].filter(Boolean).join(" - ");
+
+      if (!textoFinal) {
+        alert("Selecione um motivo ou descreva o problema.");
+        return;
+      }
+
+      fecharModalProblema();
+      dispararStatus("Com Problema", textoFinal);
+    }
+
+    // =========================================================
+    // FILA OFFLINE
+    // =========================================================
+    function adicionarNaFilaOffline(payload) {
+      const fila = JSON.parse(localStorage.getItem(KEY_OFFLINE_QUEUE) || "[]");
+      fila.push(payload);
+      localStorage.setItem(KEY_OFFLINE_QUEUE, JSON.stringify(fila));
+      atualizarBadgeFila();
+    }
+
+    async function processarFilaOffline() {
+      const fila = JSON.parse(localStorage.getItem(KEY_OFFLINE_QUEUE) || "[]");
+      if (!fila.length || !navigator.onLine) {
+        atualizarBadgeFila();
+        return;
+      }
+
+      const pendentes = [];
+      for (const item of fila) {
+        try {
+          const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(item)
+          });
+          const data = await res.json();
+          if (data.status !== "success") pendentes.push(item);
+        } catch (e) {
+          pendentes.push(item);
         }
+      }
 
-        function openSheetModal(overlayId, sheetId) {
-            const overlay = document.getElementById(overlayId);
-            const sheet = document.getElementById(sheetId);
-            overlay.style.display = 'block';
-            requestAnimationFrame(() => {
-                overlay.style.opacity = '1';
-                sheet.style.transform = 'translate(-50%, 0)';
-            });
-        }
+      localStorage.setItem(KEY_OFFLINE_QUEUE, JSON.stringify(pendentes));
+      atualizarBadgeFila();
+      if (pendentes.length === 0) {
+        mostrarToast("📡 Pendências offline sincronizadas!");
+      }
+    }
 
-        function closeSheetModal(overlayId, sheetId) {
-            const overlay = document.getElementById(overlayId);
-            const sheet = document.getElementById(sheetId);
-            sheet.style.transform = 'translate(-50%, 100%)';
-            overlay.style.opacity = '0';
-            setTimeout(() => { overlay.style.display = 'none'; }, 300);
-        }
+    function atualizarBadgeFila() {
+      const fila = JSON.parse(localStorage.getItem(KEY_OFFLINE_QUEUE) || "[]");
+      const badge = document.getElementById("fila-offline-badge");
+      if (fila.length > 0) {
+        document.getElementById("fila-count").textContent = fila.length;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
 
-        /* =====================================================================
-           NAVEGAÇÃO ENTRE AS 3 ABAS (SOLAR / FLOW-NEST / MAPA 3D)
-           ===================================================================== */
-        let activeMainTab = 'solar';
-        let mapInitialized = false;
+    // =========================================================
+    // NAVEGAÇÃO & UTILITÁRIOS
+    // =========================================================
+    function voltarParaAgenda() {
+      trocarTela("view-home");
+      renderizarListas();
+    }
 
-        function switchMainTab(tabName) {
-            activeMainTab = tabName;
-            document.querySelectorAll('.main-tab-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.tab === tabName);
-            });
+    function mudarAba(aba, btn) {
+      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("tab-agenda").classList.toggle("hidden", aba !== "agenda");
+      document.getElementById("tab-historico").classList.toggle("hidden", aba !== "historico");
+    }
 
-            document.getElementById('view-solar').style.display = (tabName === 'solar') ? 'flex' : 'none';
-            document.getElementById('view-software').style.display = (tabName === 'software') ? 'flex' : 'none';
-            document.getElementById('view-mapa').style.display = (tabName === 'mapa') ? 'block' : 'none';
+    function trocarTela(idTela) {
+      document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
+      document.getElementById(idTela).classList.remove("hidden");
+    }
 
-            if (tabName === 'mapa' && map) {
-                setTimeout(() => {
-                    map.resize();
-                    renderMarkers();
-                }, 60);
-            }
-        }
+    function mostrarLoader(ativo, texto = "Carregando...") {
+      const el = document.getElementById("loader");
+      document.getElementById("loader-text").textContent = texto;
+      el.classList.toggle("hidden", !ativo);
+    }
 
-        /* =====================================================================
-           MODAL CENTRALIZADO DA ENGRENAGEM (TODAS AS CONFIGURAÇÕES)
-           ===================================================================== */
-        function extractSheetId(input) {
-            if (!input) return '';
-            const match = input.match(/\/d\/([a-zA-Z0-9-_]+)/);
-            return match ? match[1] : input.trim();
-        }
+    function mostrarToast(mensagem) {
+      const toast = document.getElementById("toast");
+      toast.textContent = mensagem;
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 3200);
+    }
 
-        function openUnifiedConfigModal() {
-            document.getElementById('cfg-solar-sheet-id').value = localStorage.getItem(KEYS.SOLAR_SHEET_ID) || '';
-            document.getElementById('cfg-solar-github-repo').value = localStorage.getItem(KEYS.SOLAR_GITHUB_REPO) || DEFAULT_REPO;
-            document.getElementById('cfg-fn-appscript-url').value = localStorage.getItem(KEYS.FN_APPSCRIPT_URL) || '';
-            document.getElementById('cfg-kb-appscript-url').value = localStorage.getItem(KEYS.KB_APPSCRIPT_URL) || '';
-            document.getElementById('cfg-fn-portal-url').value = localStorage.getItem(KEYS.FN_PORTAL_URL) || '';
-            document.getElementById('cfg-map-sheet-url').value = localStorage.getItem(KEYS.MAP_SHEET_URL) || '';
-            document.getElementById('cfg-pix-code').value = localStorage.getItem(KEYS.PIX_CODE) || localStorage.getItem('solarinvest_pix_code_v2') || DEFAULT_PIX;
-            document.getElementById('cfg-pix-mode').value = localStorage.getItem(KEYS.PIX_MODE) || 'official_with_amount';
+    function vibrarCelular(ms) {
+      if ("vibrate" in navigator) navigator.vibrate(ms);
+    }
 
-            openSheetModal('unified-config-overlay', 'unified-config-sheet');
-        }
-
-        function closeUnifiedConfigModal() {
-            closeSheetModal('unified-config-overlay', 'unified-config-sheet');
-        }
-
-        function saveUnifiedConfig() {
-            const solarId = extractSheetId(document.getElementById('cfg-solar-sheet-id').value);
-            const repo = document.getElementById('cfg-solar-github-repo').value.trim();
-            const fnUrl = document.getElementById('cfg-fn-appscript-url').value.trim();
-            const kbUrl = document.getElementById('cfg-kb-appscript-url').value.trim();
-            const fnPortal = document.getElementById('cfg-fn-portal-url').value.trim();
-            const mapUrl = document.getElementById('cfg-map-sheet-url').value.trim();
-            const pixCode = document.getElementById('cfg-pix-code').value.trim() || DEFAULT_PIX;
-            const pixMode = document.getElementById('cfg-pix-mode').value;
-
-            if (solarId) localStorage.setItem(KEYS.SOLAR_SHEET_ID, solarId); else localStorage.removeItem(KEYS.SOLAR_SHEET_ID);
-            if (repo) localStorage.setItem(KEYS.SOLAR_GITHUB_REPO, repo);
-            if (fnUrl) localStorage.setItem(KEYS.FN_APPSCRIPT_URL, fnUrl); else localStorage.removeItem(KEYS.FN_APPSCRIPT_URL);
-            if (kbUrl) localStorage.setItem(KEYS.KB_APPSCRIPT_URL, kbUrl); else localStorage.removeItem(KEYS.KB_APPSCRIPT_URL);
-            if (fnPortal) localStorage.setItem(KEYS.FN_PORTAL_URL, fnPortal); else localStorage.removeItem(KEYS.FN_PORTAL_URL);
-            if (mapUrl) localStorage.setItem(KEYS.MAP_SHEET_URL, mapUrl); else localStorage.removeItem(KEYS.MAP_SHEET_URL);
-
-            localStorage.setItem(KEYS.PIX_CODE, pixCode);
-            localStorage.setItem(KEYS.PIX_MODE, pixMode);
-
-            scriptUrl = mapUrl;
-            closeUnifiedConfigModal();
-            showToast('Configurações salvas! Atualizando módulos...');
-
-            if (solarId) loadSolarAdminData();
-            checkSolarServerHealth(false);
-            if (fnUrl) loadFlowNestData(false);
-            syncKbEsteticaStatus();
-            if (mapUrl && navigator.onLine) syncMapFromSheet(true);
-        }
-
-        function clearUnifiedConfig() {
-            if (confirm('Deseja apagar todas as URLs e IDs de planilhas salvos neste navegador?')) {
-                Object.values(KEYS).forEach(k => {
-                    if (k !== KEYS.MAP_DB) localStorage.removeItem(k);
-                });
-                location.reload();
-            }
-        }
-
-        /* =====================================================================
-           GERADOR DE PIX & CRC16 COMPARTILHADO (SOLAR + FLOWNEST)
-           ===================================================================== */
-        function calculateCRC16(payloadWithoutCrc) {
-            let crc = 0xFFFF;
-            for (let i = 0; i < payloadWithoutCrc.length; i++) {
-                crc ^= payloadWithoutCrc.charCodeAt(i) << 8;
-                for (let j = 0; j < 8; j++) {
-                    crc = ((crc & 0x8000) !== 0) ? (((crc << 1) ^ 0x1021) & 0xFFFF) : ((crc << 1) & 0xFFFF);
-                }
-            }
-            return crc.toString(16).toUpperCase().padStart(4, '0');
-        }
-
-        function getFinalPixPayload(amount, forceExact = false) {
-            const basePix = (localStorage.getItem(KEYS.PIX_CODE) || DEFAULT_PIX).trim();
-            const mode = forceExact ? 'official_exact' : (localStorage.getItem(KEYS.PIX_MODE) || 'official_with_amount');
-            if (mode === 'official_exact' || !amount || amount <= 0) return basePix;
-
-            try {
-                let idx = 0;
-                const tags = [];
-                while (idx < basePix.length - 4) {
-                    const id = basePix.substring(idx, idx + 2);
-                    const len = parseInt(basePix.substring(idx + 2, idx + 4), 10);
-                    if (isNaN(len)) return basePix;
-                    const val = basePix.substring(idx + 4, idx + 4 + len);
-                    if (id !== '63' && id !== '54') tags.push({ id, val });
-                    idx += 4 + len;
-                }
-                const amountStr = amount.toFixed(2);
-                let rebuilt = '';
-                let inserted = false;
-                for (const t of tags) {
-                    if (!inserted && parseInt(t.id, 10) > 54) {
-                        rebuilt += `54${String(amountStr.length).padStart(2, '0')}${amountStr}`;
-                        inserted = true;
-                    }
-                    rebuilt += `${t.id}${String(t.val.length).padStart(2, '0')}${t.val}`;
-                }
-                rebuilt += '6304';
-                return rebuilt + calculateCRC16(rebuilt);
-            } catch (e) {
-                return basePix;
-            }
-        }
-
-        function roundRectPath(ctx, x, y, w, h, r) {
-            if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
-            ctx.beginPath();
-            ctx.moveTo(x + r.tl, y);
-            ctx.lineTo(x + w - r.tr, y);
-            ctx.quadraticCurveTo(x + w, y, x + w, y + r.tr);
-            ctx.lineTo(x + w, y + h - r.br);
-            ctx.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
-            ctx.lineTo(x + r.bl, y + h);
-            ctx.quadraticCurveTo(x, y + h, x, y + h - r.bl);
-            ctx.lineTo(x, y + r.tl);
-            ctx.quadraticCurveTo(x, y, x + r.tl, y);
-            ctx.closePath();
-        }
-
-        function triggerBlobDownload(blob, fileName) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setTimeout(() => URL.revokeObjectURL(url), 4000);
-        }
-
-        /* =====================================================================
-           MÓDULO 1: ENERGIA SOLAR (SOLAR INVEST)
-           ===================================================================== */
-        const TARIFA_KWH = 0.81;
-        const CUSTO_KWH_USINA = 0.176411;
-        const NATIVE_MONTHS = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-        const HEADER_WORDS = ['cliente', 'clientkey', 'nome', 'usuario', 'usuário', 'user', 'cip', 'consumo', 'mês', 'mes', 'status', 'vencimento', 'dia'];
-        const AVATAR_COLORS = ['bg-blue-600 text-white', 'bg-violet-600 text-white', 'bg-teal-600 text-white', 'bg-amber-500 text-white', 'bg-emerald-600 text-white', 'bg-purple-600 text-white', 'bg-green-600 text-white', 'bg-orange-500 text-white'];
-
-        let globalSolarInvoices = [];
-        let globalSolarClients = [];
-        let globalSolarVencMap = {};
-        let globalSolarPassMap = {};
-        let currentSolarCards = [];
-
-        async function checkSolarServerHealth(manual = false) {
-            const repo = (localStorage.getItem(KEYS.SOLAR_GITHUB_REPO) || DEFAULT_REPO).trim();
-            const jsonUrl = `https://raw.githubusercontent.com/${repo}/main/status.json?t=${Date.now()}`;
-            const pill = document.getElementById('solar-server-pill');
-            const ping = document.getElementById('solar-led-ping');
-            const dot = document.getElementById('solar-led-dot');
-            const label = document.getElementById('solar-status-label');
-            const sub = document.getElementById('solar-status-sub');
-
-            if (manual) showToast('Verificando servidor PC...');
-
-            try {
-                const res = await fetch(jsonUrl, { cache: 'no-store' });
-                if (!res.ok) throw new Error('Sem arquivo');
-                const data = await res.json();
-                const lastSignal = new Date(data.timestamp);
-                const diffMinutes = Math.max(0, Math.floor((new Date() - lastSignal) / 60000));
-                const isOnline = (diffMinutes <= 135) && (data.django_ok === true);
-
-                let elapsed = diffMinutes < 1 ? 'Agora' : (diffMinutes < 60 ? `há ${diffMinutes}m` : `há ${Math.floor(diffMinutes/60)}h`);
-                document.getElementById('srv-last-seen').innerText = data.hora_local_pc || lastSignal.toLocaleString('pt-BR');
-                document.getElementById('srv-elapsed').innerText = `${diffMinutes} min (${elapsed})`;
-                document.getElementById('srv-robo-activity').innerText = data.status_robo || 'Operando';
-                document.getElementById('srv-ucs-pending').innerText = data.ucs_pendentes !== undefined ? `${data.ucs_pendentes} UCs` : '--';
-
-                if (isOnline) {
-                    pill.className = 'server-pill-online rounded-2xl px-3.5 py-2 flex items-center gap-2.5 cursor-pointer';
-                    ping.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80';
-                    dot.className = 'relative inline-flex rounded-full h-3 w-3 led-glow-green';
-                    label.className = 'block text-[11px] font-extrabold uppercase text-solar-neon leading-none';
-                    label.innerText = 'SERVIDOR ONLINE';
-                    sub.innerText = `Sinal ${elapsed}`;
-                    document.getElementById('solar-modal-big-status').innerText = '● SERVIDOR ONLINE';
-                    document.getElementById('solar-modal-big-status').className = 'text-lg font-black uppercase text-solar-neon';
-                    document.getElementById('solar-modal-server-desc').innerText = 'Computador local e robô operando normalmente.';
-                } else {
-                    throw new Error('Offline');
-                }
-            } catch (e) {
-                pill.className = 'server-pill-offline rounded-2xl px-3.5 py-2 flex items-center gap-2.5 cursor-pointer';
-                ping.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-85';
-                dot.className = 'relative inline-flex rounded-full h-3 w-3 led-glow-red';
-                label.className = 'block text-[11px] font-extrabold uppercase text-red-400 leading-none';
-                label.innerText = 'SERVIDOR OFFLINE';
-                sub.innerText = 'Sem sinal recente';
-                document.getElementById('solar-modal-big-status').innerText = '● SERVIDOR OFFLINE';
-                document.getElementById('solar-modal-big-status').className = 'text-lg font-black uppercase text-red-400';
-                document.getElementById('solar-modal-server-desc').innerText = 'Sem sinal recente do PC local.';
-            }
-        }
-
-        function openSolarServerModal() { openSheetModal('solar-server-overlay', 'solar-server-sheet'); }
-        function closeSolarServerModal() { closeSheetModal('solar-server-overlay', 'solar-server-sheet'); }
-
-        function parseCSV(str) {
-            const arr = []; let quote = false; let row = [], col = '';
-            for (let c = 0; c < str.length; c++) {
-                let cc = str[c], nc = str[c+1];
-                if (cc === '\r') continue;
-                if (cc === '"' && quote && nc === '"') { col += cc; ++c; continue; }
-                if (cc === '"') { quote = !quote; continue; }
-                if (cc === ',' && !quote) { row.push(col.trim()); col = ''; continue; }
-                if (cc === '\n' && !quote) { if (col.trim() || row.length) { row.push(col.trim()); arr.push(row); } row = []; col = ''; continue; }
-                col += cc;
-            }
-            if (col || row.length) { row.push(col.trim()); arr.push(row); }
-            return arr;
-        }
-
-        function safeParseFloat(val) {
-            if (!val) return 0;
-            if (typeof val === 'number') return val;
-            let str = val.toString().replace(/[R$\s]/g, '');
-            if (str.includes(',') && str.includes('.')) str = str.replace(/\./g, '').replace(',', '.');
-            else if (str.includes(',')) str = str.replace(',', '.');
-            let num = parseFloat(str); return isNaN(num) ? 0 : num;
-        }
-
-        function getMonthIndex(mesStr) {
-            if (!mesStr) return -1;
-            const lower = mesStr.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return NATIVE_MONTHS.map(m => m.normalize("NFD").replace(/[\u0300-\u036f]/g, "")).findIndex(m => lower.includes(m));
-        }
-
-        function buildSolarDueInfo(dueDay, mesStr, isPaid, hasData) {
-            if (!dueDay) return { shortLabel: 'Vencimento: --', fullLabel: 'Não cadastrado', fullDateSlash: '--/--/----', whatsappDayLabel: 'A combinar', textClass: 'text-slate-400' };
-            const dayPadded = String(dueDay).padStart(2, '0');
-            const refMonthIdx = getMonthIndex(mesStr);
-            if (refMonthIdx === -1) return { shortLabel: `Vencimento: Dia ${dayPadded}`, fullLabel: `Todo dia ${dayPadded}`, fullDateSlash: `Dia ${dayPadded}`, whatsappDayLabel: `Dia ${dayPadded}`, textClass: 'text-slate-300' };
-
-            const now = new Date();
-            let targetYear = now.getFullYear();
-            let dueMonthIdx = dueDay <= 5 ? refMonthIdx + 1 : refMonthIdx;
-            if (dueMonthIdx > 11) { dueMonthIdx = 0; targetYear += 1; }
-            const monthPadded = String(dueMonthIdx + 1).padStart(2, '0');
-            const formattedDate = `${dayPadded}/${monthPadded}`;
-            const fullDateSlash = `${dayPadded}/${monthPadded}/${targetYear}`;
-
-            return {
-                shortLabel: `Vencimento: ${formattedDate}`,
-                fullLabel: `Vencimento: ${fullDateSlash}`,
-                fullDateSlash,
-                whatsappDayLabel: `Dia ${dayPadded}`,
-                textClass: isPaid ? 'text-emerald-400' : 'text-sky-300'
-            };
-        }
-
-        async function fetchGoogleSheetCSV(sheetName) {
-            const SHEET_ID = localStorage.getItem(KEYS.SOLAR_SHEET_ID);
-            if (!SHEET_ID) throw new Error('NO_SHEET_ID');
-            const urls = [
-                `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`,
-                `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(sheetName)}`
-            ];
-            for (const url of urls) {
-                try {
-                    const res = await fetch(url);
-                    if (res.ok) {
-                        const text = await res.text();
-                        if (!text.trim().startsWith('<!DOCTYPE')) return parseCSV(text);
-                    }
-                } catch (e) {}
-            }
-            throw new Error('Planilha inacessível');
-        }
+    function formatarDataLocalISO(dateObj) {
+      const ano = dateObj.getFullYear();
+      const mes = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const dia = String(dateObj.getDate()).padStart(2, "0");
+      return `${ano}-${mes}-${dia}`;
+    }
+  </script>
+</body>
+</html>
