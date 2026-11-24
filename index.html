@@ -1111,7 +1111,7 @@
 
         <div class="input-wrap">
           <label for="login-pin">PIN de Segurança</label>
-          <input type="password" id="login-pin" class="modern-input" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" required>
+          <input type="password" id="login-pin" class="modern-input" inputmode="text" maxlength="8" placeholder="••••••••" required>
         </div>
 
         <button type="submit" class="btn-primary-solar">
@@ -1500,7 +1500,7 @@
       const erroEl = document.getElementById("login-erro");
       erroEl.textContent = "";
 
-      if (telefone.length < 10 || pin.length !== 4) {
+      if (telefone.length < 10 || pin.length < 4) {
         erroEl.textContent = "Informe DDD + número e o PIN de 4 dígitos.";
         return;
       }
